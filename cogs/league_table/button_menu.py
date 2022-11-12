@@ -3,6 +3,8 @@ from disnake import ui
 import disnake
 from typing import Optional
 
+# copied from a tutorial so might want to find better alternative
+
 class ButtonMenu(View):
     def __init__(self, pages:list, timeout:float, user:Optional[disnake.User]=None) -> None:
         super().__init__(timeout=timeout)
