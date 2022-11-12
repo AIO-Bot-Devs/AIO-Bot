@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 import disnake
 from disnake.ext import commands
 import aiohttp
+import datetime
 from table2ascii import table2ascii as t2a, Alignment
 from PIL import Image, ImageDraw, ImageFont
 import json
@@ -19,7 +20,7 @@ class TableCommands(commands.Cog):
 
     # this command will retrieve the league table from the football-data.org api
     @commands.slash_command(name="table", description="Get the league table for a specific league")
-    async def table(self, inter, league_id: int,img: bool = False):
+    async def table(self, inter, league_id: int, img: bool = False):
 
         async def table_gen(data):
             # base_json is used to reduce the length of the code
@@ -44,7 +45,7 @@ class TableCommands(commands.Cog):
                 column_widths=[8, width+2, 8, 8, 8, 8, 8, 8, 8, 8],
                 alignments=[Alignment.LEFT] + [Alignment.LEFT] + [Alignment.CENTER] * 8,
             )
-            return table
+            return table, data['response'][0]['league']['name']
 
         async def image_gen(table):
             # create a new image 
@@ -61,9 +62,6 @@ class TableCommands(commands.Cog):
             # save image to file
             file_name = "table.png"
             out.save(file_name)
-            # create embed using the PIL image
-            """embed = disnake.Embed(title=f"{data['response'][0]['league']['name']} Table", color=0x2F3136)
-            embed.set_image(file=disnake.File("table.png"))"""
             return file_name
 
         async def table_format(table):
@@ -89,12 +87,15 @@ class TableCommands(commands.Cog):
                 async with session.get(url, headers=headers, data=payload) as response:
                     # if the request is successful, then get the json file
                     if response.status == 200:
+                        # convert json file to a python dictionary and add the time of the request to the dictionary
+                        data = await response.json()
+                        data["time"] = str(datetime.datetime.now())
                         with open(abs_file_path, "w") as f:
-                            f.write(response.text)
+                            json.dump(data, f)
             # read the data from the file
             with open(abs_file_path, "r") as f:
                 return json.load(f)
-        
+
 
         # getting the league table json file
         script_dir = os.path.dirname(__file__)
@@ -105,15 +106,20 @@ class TableCommands(commands.Cog):
         if os.path.exists(abs_file_path):
             with open(abs_file_path, "r") as f:
                 data = json.load(f)
+            # if the data is older than 1 day, then send a new request
+            if datetime.datetime.now() - datetime.datetime.strptime(data["time"], "%Y-%m-%d %H:%M:%S.%f") > datetime.timedelta(days=1):
+                data = await make_request(abs_file_path)
         else:                
             data = await make_request(abs_file_path)
 
         # generating the table using table2ascii
-        table = await table_gen(data)
+        table, table_name = await table_gen(data)
         # if img is true, then generate an image of the table otherwise, send the table as a formatted string
         if img:
             file_name = await image_gen(table)
-            await inter.response.send_message(file=disnake.File(file_name))
+            embed = disnake.Embed(title=f"{table_name} Table", color=0x2F3136)
+            embed.set_image(file=disnake.File(file_name))
+            await inter.response.send_message(embed=embed)
         elif not img:
             pages = await table_format(table)
             await inter.response.send_message(content=pages[0], view=ButtonMenu(pages=pages, timeout=60))

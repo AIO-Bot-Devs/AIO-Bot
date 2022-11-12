@@ -9,3 +9,6 @@ __pycache__
 
 # ignore disnake.log
 *.log
+
+# ignore all .png files
+*.png
