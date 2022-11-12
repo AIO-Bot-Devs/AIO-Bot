@@ -1,0 +1,11 @@
+# ignore all .env files
+*.env
+
+# ignore all league table json files
+cogs/league_table/leagues/*.json
+
+# ignore pycache
+__pycache__
+
+# ignore disnake.log
+*.log
