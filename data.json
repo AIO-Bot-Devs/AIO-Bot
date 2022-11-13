@@ -1,19 +1,29 @@
 {
     "suggestions": {
-        "channels": []
+        "channels": [
+            969935590684516392,
+            1002963562345549875
+        ]
     },
     "starboard": {
-        "servers": {}
+        "servers": {
+            "777652457059647498": 994306849933377536
+        }
     },
     "utils": {},
     "translate": {},
     "qrcodes": {
-        "index": 1
+        "index": 26
     },
     "reminders": {
         "reminders": {},
         "birthdays": {
-            "servers": {}
+            "servers": {
+                "1002963156273999884": {
+                    "channel": 1013791961242685601,
+                    "users": {
+                        "554343055029698571": 1187697600
+                    }
                 }
             }
         }
