@@ -100,7 +100,7 @@ class utilsCog(commands.Cog):
         parsedUrl = urllib.parse.quote_plus(url)
         screenshot_api = f"https://shot.screenshotapi.net/screenshot?token=N72DF2K-5ZZ4WCR-JJPEHAX-2E1T31G&url={parsedUrl}&width=1920&height=1080&output=image&file_type=png&wait_for_event=load"
         screenshot = requests.get(screenshot_api)
-        with open("assets/screenshot.png", "wb") as f:
+        with open("screenshot.png", "wb") as f:
             f.write(screenshot.content)
         image = disnake.File("screenshot.png")
         webpageEmbed = disnake.Embed(
