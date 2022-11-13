@@ -14,4 +14,4 @@ __pycache__
 *.png
 
 # ignore all test.py files
-text.py
+test.py
