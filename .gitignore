@@ -15,3 +15,6 @@ __pycache__
 
 # ignore all test.py files
 test.py
+
+# ignore .DS_Store files (annoying mac files)
+.DS_Store
