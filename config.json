@@ -1,11 +1,11 @@
 {
-    "owner": 554343055029698571,
-    "dev": true,
-    "test_guilds": [777652457059647498, 1002963156273999884],
+    "owner": OWNER_ID,
+    "dev": false,
+    "test_guilds": [TEST_GUILD_1, TEST_GUILD_2],
     "prefix": "-",
     "status": "Online",
-    "activity": "with code :)",
-    "uptime_channel": 1016416185660743710,
+    "activity": "ACTIVITY",
+    "uptime_channel": UPTIME_CHANNEL,
     "colours": {
         "neutral": "0x03d7fc",
         "success": "0x00ff22",
