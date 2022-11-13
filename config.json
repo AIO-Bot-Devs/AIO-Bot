@@ -1,0 +1,40 @@
+{
+    "owner": 554343055029698571,
+    "dev": true,
+    "test_guilds": [777652457059647498, 1002963156273999884],
+    "prefix": "-",
+    "status": "Online",
+    "activity": "with code :)",
+    "uptime_channel": 1016416185660743710,
+    "colours": {
+        "neutral": "0x03d7fc",
+        "success": "0x00ff22",
+        "error": "0xff0000"
+    },
+    "cogs": {
+        "suggestions": {
+            "active": true
+        },
+        "starboard": {
+            "active": true
+        },
+        "utils": {
+            "active": true
+        },
+        "translate": {
+            "active": true
+        },
+        "qrcodes": {
+            "active": true
+        },
+        "reminders": {
+            "active": true
+        },
+        "news": {
+            "active": true
+        },
+        "minecraft": {
+            "active": true
+        }
+    }
+}
