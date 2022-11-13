@@ -35,6 +35,9 @@
         },
         "minecraft": {
             "active": true
+        },
+        "league_table.league_table": {
+            "active": true
         }
     }
 }
