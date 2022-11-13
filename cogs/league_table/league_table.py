@@ -1,13 +1,16 @@
 import os
 from dotenv import load_dotenv
 import disnake
+from disnake import MessageInteraction
 from disnake.ext import commands
+from disnake.ui import View, button, Select
 import aiohttp
 import datetime
 from table2ascii import table2ascii as t2a, Alignment
 from PIL import Image, ImageDraw, ImageFont
 import json
 from .button_menu import ButtonMenu
+from .select_menu import SelectMenu
 
 # getting bot token from token.env
 load_dotenv()
@@ -96,6 +99,20 @@ class TableCommands(commands.Cog):
             with open(abs_file_path, "r") as f:
                 return json.load(f)
 
+        leagues = [["Premier League", 39], ["La Liga", 140], ["Bundesliga", 78], ["Serie A", 135], ["Ligue 1", 61]]
+        options = []
+        for league in leagues:
+            options.append(disnake.SelectOption(label=league[0], value=league[1]))
+        select = Select(
+            placeholder="Please select a league",
+            min_values=1,
+            max_values=1,
+            options=options
+        )
+        await inter.response.send_message(components=select, ephemeral=True)
+        new_inter: MessageInteraction = await self.bot.wait_for("dropdown")
+        value = new_inter.values[0]
+        league_id = int(value)
 
         # getting the league table json file
         script_dir = os.path.dirname(__file__)
@@ -119,10 +136,10 @@ class TableCommands(commands.Cog):
             file_name = await image_gen(table)
             embed = disnake.Embed(title=f"{table_name} Table", color=0x2F3136)
             embed.set_image(file=disnake.File(file_name))
-            await inter.response.send_message(embed=embed)
+            await new_inter.response.send_message(embed=embed)
         elif not img:
             pages = await table_format(table)
-            await inter.response.send_message(content=pages[0], view=ButtonMenu(pages=pages, timeout=60))
+            await new_inter.response.send_message(content=pages[0], view=ButtonMenu(pages=pages, timeout=60))
 
 # allows the cog to be loaded
 def setup(bot: commands.Bot):
