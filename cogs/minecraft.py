@@ -128,7 +128,7 @@ class minecraftCog(commands.Cog):
                         fh.write(base64.decodebytes(data["icon"].split(',')[1].encode()))
                     serverEmbed.set_thumbnail(file=disnake.File("icon.png"))
                 else:
-                    serverEmbed.set_thumbnail(file=disnake.File("default_icon.png"))
+                    serverEmbed.set_thumbnail(file=disnake.File("default_icon_64.png"))
                 serverEmbed.add_field(name="Port", value=port, inline=False)
                 serverEmbed.add_field(name="Version", value=data['version'], inline=False)
                 serverEmbed.add_field(name="Players", value=f"{data['players']['online']}/{data['players']['max']}", inline=False)
