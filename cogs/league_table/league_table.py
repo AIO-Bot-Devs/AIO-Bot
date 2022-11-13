@@ -22,7 +22,7 @@ class TableCommands(commands.Cog):
 
     # this command will retrieve the league table from the football-data.org api
     @commands.slash_command(name="table", description="Get the league table for a specific league")
-    async def table(self, inter, league_id: int, img: bool = False):
+    async def table(self, inter, img: bool):
 
         async def table_gen(data):
             # base_json is used to reduce the length of the code
