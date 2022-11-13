@@ -98,17 +98,21 @@ class TableCommands(commands.Cog):
             with open(abs_file_path, "r") as f:
                 return json.load(f)
 
+        # list of leagues and their ids for the select menu, will be updated later
         leagues = [["Premier League", 39], ["La Liga", 140], ["Bundesliga", 78], ["Serie A", 135], ["Ligue 1", 61]]
         options = []
         for league in leagues:
             options.append(disnake.SelectOption(label=league[0], value=league[1]))
+        # create a select menu
         select = Select(
             placeholder="Please select a league",
             min_values=1,
             max_values=1,
             options=options
         )
+        # send the select menu
         await inter.response.send_message(components=select, ephemeral=True)
+        # wait for the user to select a league, set as new interaction and grab league id
         new_inter: MessageInteraction = await self.bot.wait_for("dropdown")
         value = new_inter.values[0]
         league_id = int(value)
