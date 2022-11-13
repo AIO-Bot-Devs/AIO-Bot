@@ -10,7 +10,6 @@ from table2ascii import table2ascii as t2a, Alignment
 from PIL import Image, ImageDraw, ImageFont
 import json
 from .button_menu import ButtonMenu
-from .select_menu import SelectMenu
 
 # getting bot token from token.env
 load_dotenv()
