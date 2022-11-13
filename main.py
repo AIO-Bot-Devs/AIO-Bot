@@ -67,7 +67,7 @@ cogs = config[8]
 for i in cogs:
     if cogs[i]:
         bot.load_extension(f'cogs.{i}')
-bot.load_extenstion("cog.league_table.league_table")
+bot.load_extension("cog.league_table.league_table")
 
 
 #Outputs a mesage when bot is online
