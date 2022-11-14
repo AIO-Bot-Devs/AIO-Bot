@@ -58,12 +58,15 @@ else:
 
 
 #Setup global variables
+# convert string hex color codes from config to int with base 16, then add them to bot
 bot.colour_neutral = int(config[8]["neutral"], base=16)
 bot.colour_success = int(config[8]["success"], base=16)
 bot.colour_error = int(config[8]["error"], base=16)
+# add emoji codes from config to bot 
 bot.emoji_check = config[9]["check"]
 bot.emoji_cross = config[9]["cross"]
 bot.emoji_loading = config[9]["loading"]
+# add ownerd id and footer from config to bot
 bot.owner_id = config[0]
 bot.footer = config[7]
 
