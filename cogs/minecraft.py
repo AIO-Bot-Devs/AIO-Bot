@@ -126,10 +126,11 @@ class minecraftCog(commands.Cog):
         port: The port of the server (default 25565)
         """
         bot = self.bot
-        address = address.replace(" ", "").lower()
+        address = address.strip().lower()
         # sends a loading message
         await inter.response.defer(with_message=True)
         # gets the server data from the api
+        # checks if port is 25565 so the image doesn't contain port if it's default
         if port == 25565:
             api = f"https://api.mcsrvstat.us/2/{address}"
         else:
@@ -149,6 +150,7 @@ class minecraftCog(commands.Cog):
                 )
                 # if there is an icon, then set the thumbnail to the icon
                 if data["icon"]:
+                    # decode the icon in api from base64 to bytes and write to an image file
                     with open("icon.png", "wb") as fh:
                         fh.write(base64.decodebytes(data["icon"].split(',')[1].encode()))
                     serverEmbed.set_thumbnail(file=disnake.File("icon.png"))
@@ -159,7 +161,7 @@ class minecraftCog(commands.Cog):
                 serverEmbed.add_field(name="Port", value=port, inline=False)
                 serverEmbed.add_field(name="Version", value=data['version'], inline=False)
                 serverEmbed.add_field(name="Players", value=f"{data['players']['online']}/{data['players']['max']}", inline=False)
-                # if the server software dunno what that is ngl
+                # if the server software is available in api then add it to the embed 
                 if 'software' in data:
                     serverEmbed.add_field(name="Software", value=data['software'], inline=False)
                 # add the server banner to the embed
@@ -175,18 +177,22 @@ class minecraftCog(commands.Cog):
                 serverEmbed.set_thumbnail(file=disnake.File("default_icon_64.png"))
                 # add banner to the embed
                 serverEmbed.set_image(url=img)
+            # add footer to embed
+            owner = await self.bot.fetch_user(self.bot.owner_id)
+            serverEmbed.set_footer(text="Panda Bot • EvilPanda#7288", icon_url=owner.avatar)
             # edit the original message with the embed
             await inter.edit_original_message(embed=serverEmbed)
         # if the api returns an error, then send an error message
         else:
             errorEmbed = disnake.Embed(
                 title=f"API Error",
-                description=f"Error {response.status_code} occured with server status api.",
+                description=f"Error {response.status_code} occured with server status api. Please report this",
                 color=self.bot.colour_error)
-            # might want to untab this so it's added to every embed
             owner = await self.bot.fetch_user(self.bot.owner_id)
+            # add footer to embed
             errorEmbed.set_footer(text="Panda Bot • EvilPanda#7288", icon_url=owner.avatar)
             errorEmbed.set_thumbnail(url="https://evilpanda.me/files/error1.png")
+            # edit the original message with the embed
             await inter.edit_original_message(embed=errorEmbed)
 
 
