@@ -25,13 +25,14 @@ class utilsCog(commands.Cog):
         ----------
         user: The user to get it from
         """
+        bot = self.bot
         avatarEmbed = disnake.Embed(
             title=f"User Avatar",
             color=self.bot.colour_success)
         avatarEmbed.set_image(url=user.avatar)
         avatarEmbed.set_author(name=user)
         owner = await self.bot.fetch_user(self.bot.owner_id)
-        avatarEmbed.set_footer(text="Panda Bot • EvilPanda#7288", icon_url=owner.avatar)
+        avatarEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
         await inter.response.send_message(embed=avatarEmbed)
 
     @commands.slash_command()
@@ -63,6 +64,7 @@ class utilsCog(commands.Cog):
         ----------
         url: The url of the webpage
         """
+        bot = self.bot
         await inter.response.defer(with_message=True)
         if not url.startswith("http://") and not url.startswith("https://"):
             url = "http://" + url
@@ -74,7 +76,7 @@ class utilsCog(commands.Cog):
                 description="Make sure this URL exists and is valid",
                 color=self.bot.colour_error)
             owner = await self.bot.fetch_user(self.bot.owner_id)
-            errorEmbed.set_footer(text="Panda Bot • EvilPanda#7288", icon_url=owner.avatar)
+            errorEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
             errorEmbed.set_thumbnail(url="https://evilpanda.me/files/error1.png")
             await inter.edit_original_message(embed=errorEmbed)
             return
@@ -93,7 +95,7 @@ class utilsCog(commands.Cog):
             description=f"[[go to webpage]]({url})",
             color=self.bot.colour_success)
         owner = await self.bot.fetch_user(self.bot.owner_id)
-        webpageEmbed.set_footer(text="Panda Bot • EvilPanda#7288", icon_url=owner.avatar)
+        webpageEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
         webpageEmbed.set_image(file=image)
         await inter.edit_original_message(embed=webpageEmbed)
 

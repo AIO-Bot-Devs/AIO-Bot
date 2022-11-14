@@ -30,8 +30,8 @@ class suggestionsCog(commands.Cog):
     # create a suggestion embed
     @commands.Cog.listener()
     async def on_message(self, message):
-        channels = checkChannels()
         bot = self.bot
+        channels = checkChannels()
         # if the message is in a suggestion channel and is not a bot
         if message.channel.id in channels and not message.author.bot:
             # delete the message
@@ -43,7 +43,7 @@ class suggestionsCog(commands.Cog):
             suggestEmbed.set_author(name=f"Suggestion from {message.author}", icon_url=message.author.avatar)
             # set the embed footer
             owner = await self.bot.fetch_user(self.bot.owner_id)
-            suggestEmbed.set_footer(text="Panda Bot • EvilPanda#7288", icon_url=owner.avatar)
+            suggestEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
             embed_msg = await message.channel.send(embed=suggestEmbed)
             # add the reactions, should change to buttons
             await embed_msg.add_reaction('👍')
@@ -79,7 +79,7 @@ class suggestionsCog(commands.Cog):
             # set the embed author and footer
             newEmbed.set_author(name=oldEmbed.author.name, icon_url=oldEmbed.author.icon_url)
             owner = await self.bot.fetch_user(self.bot.owner_id)
-            newEmbed.set_footer(text="Panda Bot • EvilPanda#7288", icon_url=owner.avatar)
+            newEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
             await message.edit(embed=newEmbed)
 
     # Updates the colour of an embed based on the ratio of upvotes to downvotes
@@ -107,7 +107,7 @@ class suggestionsCog(commands.Cog):
                 color=self.bot.colour_neutral)
             newEmbed.set_author(name=oldEmbed.author.name, icon_url=oldEmbed.author.icon_url)
             owner = await self.bot.fetch_user(self.bot.owner_id)
-            newEmbed.set_footer(text="Panda Bot • EvilPanda#7288", icon_url=owner.avatar)
+            newEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
             await message.edit(embed=newEmbed)
 
     # default command for the suggestions channel command

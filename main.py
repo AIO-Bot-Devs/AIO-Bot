@@ -17,13 +17,14 @@ def getConfig():
     status = data["status"]
     activity = data["activity"]
     uptime_channel = data["uptime_channel"]
+    footer = data["footer"]
     colours = data["colours"]
     emojis = data["emojis"]
     # makes a dict of all the cogs and their status
     cogs = {}
     for i in data["cogs"]:
         cogs[i] = data["cogs"][i]["active"]
-    return owner, dev, test_guilds, prefix, status, activity, uptime_channel, colours, emojis, cogs
+    return owner, dev, test_guilds, prefix, status, activity, uptime_channel, footer, colours, emojis, cogs
 
 
 #Define intents for bot (make these more specific later so bot doesn't require unnecessary intents/permissions)
@@ -57,17 +58,18 @@ else:
 
 
 #Setup global variables
-bot.colour_neutral = int(config[7]["neutral"], base=16)
-bot.colour_success = int(config[7]["success"], base=16)
-bot.colour_error = int(config[7]["error"], base=16)
-bot.emoji_check = config[8]["check"]
-bot.emoji_cross = config[8]["cross"]
-bot.emoji_loading = config[8]["loading"]
+bot.colour_neutral = int(config[8]["neutral"], base=16)
+bot.colour_success = int(config[8]["success"], base=16)
+bot.colour_error = int(config[8]["error"], base=16)
+bot.emoji_check = config[9]["check"]
+bot.emoji_cross = config[9]["cross"]
+bot.emoji_loading = config[9]["loading"]
 bot.owner_id = config[0]
+bot.footer = config[7]
 
 
 #Adds cogs to the main bot (if they are enabled in config.json)
-cogs = config[9]
+cogs = config[10]
 
 for i in cogs:
     if cogs[i]:
@@ -110,7 +112,7 @@ async def on_ready():
 # description=f"",
 # color=bot.colour_success)
 #     owner = await bot.fetch_user(bot.owner_id)
-#     setupEmbed.set_footer(text="Panda Bot • EvilPanda#7288", icon_url=owner.avatar)
+#     setupEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
 #     setupEmbed.set_thumbnail(url="https://evilpanda.me/files/idk.png")
 #     await inter.response.send_message(embed=setupEmbed)
 
