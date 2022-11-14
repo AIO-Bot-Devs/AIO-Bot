@@ -125,6 +125,7 @@ class minecraftCog(commands.Cog):
         address: The address of the server
         port: The port of the server (default 25565)
         """
+        bot = self.bot
         address = address.replace(" ", "").lower()
         # sends a loading message
         await inter.response.defer(with_message=True)
@@ -143,7 +144,7 @@ class minecraftCog(commands.Cog):
             if data['online']:
                 serverEmbed = disnake.Embed(
                     title=f"Server: {address}",
-                    description="<:check:1002964750356987935> Online",
+                    description=f"{bot.emoji_check} Online",
                     color=self.bot.colour_success
                 )
                 # if there is an icon, then set the thumbnail to the icon
@@ -167,7 +168,7 @@ class minecraftCog(commands.Cog):
             else:
                 serverEmbed = disnake.Embed(
                     title=f"Server: '{address}'",
-                    description="<:cross:1002964682585407591> Offline",
+                    description=f"{bot.emoji_cross} Offline",
                     color=self.bot.colour_error
                 )
                 # set the thumbnail to the default icon

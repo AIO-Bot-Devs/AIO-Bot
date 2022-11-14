@@ -35,7 +35,8 @@ class translateCog(commands.Cog):
         destination: The destination language
         source: The source language (optional)
         """
-        await inter.response.send_message("<a:loading:1005134280839659540> This command is currently in progress.")
+        bot = self.bot
+        await inter.response.send_message(f"{bot.emoji_loading} This command is currently in progress.")
         # TRY TO FIX AT SOME POINT LOL
         # code = getCode(destination)
         # translator = Translator()
