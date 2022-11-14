@@ -6,25 +6,10 @@ from bs4 import BeautifulSoup
 import urllib.parse
 import asyncio
 
-def progressBar(percentage):
-    bar = "["
-    for i in range(25):
-        if i < percentage / 4:
-            bar += "#"
-        else:
-            bar += "--"
-    bar += "]"
-    return bar
-
-def listToString(list):
-    string = ""
-    for i in list:
-        string += i + ", "
-    string = string[:-2]
-    return string
 
 def setup(bot):
     bot.add_cog(utilsCog(bot))
+
 
 class utilsCog(commands.Cog):
     def __init__(self, bot):
