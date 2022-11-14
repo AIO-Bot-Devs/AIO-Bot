@@ -64,26 +64,27 @@ class starboardCog(commands.Cog):
 
     # subcommand to set the starboard channel
     @starboardchannel.sub_command()
-    async def set(inter, channel: disnake.TextChannel):
+    async def set(self, inter, channel: disnake.TextChannel):
         """
         Parameters
         ----------
         channel: The channel to set
         """
+        bot = self.bot
         # if the user is an admin allow them to set the channel, otherwise deny
         if inter.user.guild_permissions.administrator == True:
             servers = checkServers()
             # if a starboard channel is already set, send error message
             if str(inter.guild.id) in servers and servers[str(inter.guild.id)] == channel.id:
-                await inter.response.send_message(f'<:cross:1002964682585407591> {channel.mention} is already set as the starboard channnel.')
+                await inter.response.send_message(f'{bot.emoji_cross} {channel.mention} is already set as the starboard channnel.')
             # if a starboard channel is not set, set the channel
             else: 
                 servers[str(inter.guild.id)] = channel.id
                 editServers(servers)
-                await inter.response.send_message(f'<:check:1002964750356987935> {channel.mention} has been set as the starboard channel.')
+                await inter.response.send_message(f'{bot.emoji_check} {channel.mention} has been set as the starboard channel.')
         # if the user is not an admin, send error message
         else:
-            await inter.response.send_message('<:cross:1002964682585407591> You do not have permission to use this command.', ephemeral=True)
+            await inter.response.send_message(f'{bot.emoji_cross} You do not have permission to use this command.', ephemeral=True)
 
     # subcommand to remove the starboard channel
     @starboardchannel.sub_command()
@@ -98,12 +99,12 @@ class starboardCog(commands.Cog):
             # if a starboard channel is set, remove the channel
             if str(inter.guild.id) in servers:
                 channel = bot.get_channel(servers[str(inter.guild.id)])
-                await inter.response.send_message(f'<:check:1002964750356987935> {channel.mention} has been removed as the starboard channel.')
+                await inter.response.send_message(f'{bot.emoji_check} {channel.mention} has been removed as the starboard channel.')
                 del servers[str(inter.guild.id)]
                 editServers(servers)
             # if a starboard channel is not set, send error message
             else:    
-                await inter.response.send_message(f'<:cross:1002964682585407591> There is no starboard channel setup in this server. Consider using ``/starboardchannel set``')
+                await inter.response.send_message(f'{bot.emoji_cross} There is no starboard channel setup in this server. Consider using ``/starboardchannel set``')
         # if the user is not an admin, send error message
         else:
-            await inter.response.send_message('<:cross:1002964682585407591> You do not have permission to use this command.', ephemeral=True)
+            await inter.response.send_message(f'{bot.emoji_cross} You do not have permission to use this command.', ephemeral=True)

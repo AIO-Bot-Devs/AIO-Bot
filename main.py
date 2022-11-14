@@ -19,10 +19,12 @@ def getConfig():
     activity = data["activity"]
     uptime_channel = data["uptime_channel"]
     colours = data["colours"]
+    emojis = data["emojis"]
+    # makes a dict of all the cogs and their status
     cogs = {}
     for i in data["cogs"]:
         cogs[i] = data["cogs"][i]["active"]
-    return owner, dev, test_guilds, prefix, status, activity, uptime_channel, colours, cogs
+    return owner, dev, test_guilds, prefix, status, activity, uptime_channel, colours, emojis, cogs
 
 
 #Define intents for bot (make these more specific later so bot doesn't require unnecessary intents/permissions)
@@ -59,11 +61,14 @@ else:
 bot.colour_neutral = int(config[7]["neutral"], base=16)
 bot.colour_success = int(config[7]["success"], base=16)
 bot.colour_error = int(config[7]["error"], base=16)
+bot.emoji_check = config[8]["check"]
+bot.emoji_cross = config[8]["cross"]
+bot.emoji_loading = config[8]["loading"]
 bot.owner_id = config[0]
 
 
 #Adds cogs to the main bot (if they are enabled in config.json)
-cogs = config[8]
+cogs = config[9]
 
 # loads each cog
 for i in cogs:
@@ -81,17 +86,17 @@ async def on_ready():
     try:    
         uptime = await bot.fetch_channel(config[6])
         if config[1] == True:
-            dev = "<:check:1002964750356987935>"
+            dev = bot.emoji_check
         else:
-            dev = "<:cross:1002964682585407591>"
+            dev = bot.emoji_cross
         cogs_string = ""
         for i in cogs:
             cogs_string += "\n"
             if cogs[i] == True:
-                cogs_string += f">   • <:check:1002964750356987935> {i} enabled"
+                cogs_string += f">   • {bot.emoji_check} {i} enabled"
             else:
-                cogs_string += f">   • <:cross:1002964682585407591> {i} disabled"
-        await uptime.send(f"<:check:1002964750356987935> **{bot.user.mention} online!**\n> Disnake: {disnake.__version__}\n> Latency: {int(bot.latency * 1000)}ms\n> Dev mode: {dev}\n> Guilds: {len(bot.guilds)}\n> Cogs: {cogs_string}")
+                cogs_string += f">   • {bot.emoji_cross} {i} disabled"
+        await uptime.send(f"{bot.emoji_check} **{bot.user.mention} online!**\n> Disnake: {disnake.__version__}\n> Latency: {int(bot.latency * 1000)}ms\n> Dev mode: {dev}\n> Guilds: {len(bot.guilds)}\n> Cogs: {cogs_string}")
     except:
         print("Uptime channel not found")
 
