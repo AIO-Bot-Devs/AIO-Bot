@@ -21,8 +21,15 @@ class TableCommands(commands.Cog):
         self.bot = bot
 
     # this command will retrieve the league table from the football-data.org api
-    @commands.slash_command(name="table", description="Get the league table for a specific league")
+    @commands.slash_command()
     async def table(self, inter, img: bool):
+        """
+        Get the league table for a specific league
+
+        Parameters
+        ----------
+        img: Whether to send the table as an image or not
+        """
 
         async def table_gen(data):
             # base_json is used to reduce the length of the code
