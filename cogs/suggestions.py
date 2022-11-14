@@ -26,6 +26,34 @@ class suggestionsCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    async def add_embed(self, description, color, name, icon):
+        embed = disnake.Embed(
+                description=description,
+                color=color)
+        embed.set_author(name=name, icon_url=icon)
+        # set the embed footer
+        owner = await self.bot.fetch_user(self.bot.owner_id)
+        embed.set_footer(text="Panda Bot • EvilPanda#7288", icon_url=owner.avatar)
+        return embed
+
+    async def reaction_check(self, bot, payload):
+        message = await bot.get_channel(payload.channel_id).fetch_message(payload.message_id)
+        reactions = message.reactions
+        oldEmbed = message.embeds[0]
+        # added the info for the embed to variables
+        description = oldEmbed.description
+        name = oldEmbed.author.name
+        icon = oldEmbed.author.icon_url
+        # if there are more thumbs up than thumbs down, set the colour to green
+        if reactions[0].count > reactions[1].count:
+            newEmbed = await self.add_embed(description, self.bot.colour_success, name, icon)
+        # if there are more thumbs down than thumbs up, set the colour to red
+        elif reactions[0].count < reactions[1].count:
+            newEmbed = await self.add_embed(description, self.bot.colour_error, name, icon)
+        # if there are an equal amount of thumbs up and thumbs down, set the colour to neutral
+        else:
+            newEmbed = await self.add_embed(description, self.bot.colour_neutral, name, icon)
+        return message, newEmbed
 
     # create a suggestion embed
     @commands.Cog.listener()
@@ -37,13 +65,11 @@ class suggestionsCog(commands.Cog):
             # delete the message
             await message.delete()
             # create the embed
-            suggestEmbed = disnake.Embed(
-                description=message.content,
-                color=self.bot.colour_neutral)
-            suggestEmbed.set_author(name=f"Suggestion from {message.author}", icon_url=message.author.avatar)
-            # set the embed footer
-            owner = await self.bot.fetch_user(self.bot.owner_id)
-            suggestEmbed.set_footer(text="Panda Bot • EvilPanda#7288", icon_url=owner.avatar)
+            description = message.content
+            color = self.bot.colour_neutral
+            name = f"Suggestion from {message.author}"
+            icon = message.author.avatar
+            suggestEmbed = await self.add_embed(description, color, name, icon)
             embed_msg = await message.channel.send(embed=suggestEmbed)
             # add the reactions, should change to buttons
             await embed_msg.add_reaction('👍')
@@ -58,28 +84,8 @@ class suggestionsCog(commands.Cog):
         guild = bot.get_guild(payload.guild_id)
         # whats payload??
         if payload.channel_id in channels and payload.member != guild.me:
-            message = await bot.get_channel(payload.channel_id).fetch_message(payload.message_id)
-            reactions = message.reactions
-            oldEmbed = message.embeds[0]
-            # if there are more thumbs up than thumbs down, set the colour to green
-            if reactions[0].count > reactions[1].count:
-                newEmbed = disnake.Embed(
-                description=oldEmbed.description,
-                color=self.bot.colour_success)
-            # if there are more thumbs down than thumbs up, set the colour to red
-            elif reactions[0].count < reactions[1].count:
-                newEmbed = disnake.Embed(
-                description=oldEmbed.description,
-                color=self.bot.colour_error)
-            # if there are an equal amount of thumbs up and thumbs down, set the colour to neutral
-            else:
-                newEmbed = disnake.Embed(
-                description=oldEmbed.description,
-                color=self.bot.colour_neutral)
-            # set the embed author and footer
-            newEmbed.set_author(name=oldEmbed.author.name, icon_url=oldEmbed.author.icon_url)
-            owner = await self.bot.fetch_user(self.bot.owner_id)
-            newEmbed.set_footer(text="Panda Bot • EvilPanda#7288", icon_url=owner.avatar)
+            # create the new embed with the updated colour
+            message, newEmbed = await self.reaction_check(bot, payload)
             await message.edit(embed=newEmbed)
 
     # Updates the colour of an embed based on the ratio of upvotes to downvotes
@@ -90,24 +96,8 @@ class suggestionsCog(commands.Cog):
         channels = checkChannels()
         bot = self.bot
         if payload.channel_id in channels:
-            message = await bot.get_channel(payload.channel_id).fetch_message(payload.message_id)
-            reactions = message.reactions
-            oldEmbed = message.embeds[0]
-            if reactions[0].count > reactions[1].count:
-                newEmbed = disnake.Embed(
-                description=oldEmbed.description,
-                color=self.bot.colour_success)
-            elif reactions[0].count < reactions[1].count:
-                newEmbed = disnake.Embed(
-                description=oldEmbed.description,
-                color=self.bot.colour_error)
-            else:
-                newEmbed = disnake.Embed(
-                description=oldEmbed.description,
-                color=self.bot.colour_neutral)
-            newEmbed.set_author(name=oldEmbed.author.name, icon_url=oldEmbed.author.icon_url)
-            owner = await self.bot.fetch_user(self.bot.owner_id)
-            newEmbed.set_footer(text="Panda Bot • EvilPanda#7288", icon_url=owner.avatar)
+            # create the new embed with the updated colour
+            message, newEmbed = await self.reaction_check(bot, payload)
             await message.edit(embed=newEmbed)
 
     # default command for the suggestions channel command
