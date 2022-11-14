@@ -10,6 +10,7 @@ import json
 def getConfig():
     with open('config.json', 'r') as f:
         data = json.load(f)
+    # grabs all the config data
     owner = data["owner"]
     dev = data["dev"]
     test_guilds = data["test_guilds"]
@@ -64,6 +65,7 @@ bot.owner_id = config[0]
 #Adds cogs to the main bot (if they are enabled in config.json)
 cogs = config[8]
 
+# loads each cog
 for i in cogs:
     if cogs[i]:
         bot.load_extension(f'cogs.{i}')
