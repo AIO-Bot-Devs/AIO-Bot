@@ -103,18 +103,23 @@ class utilsCog(commands.Cog):
         soup = BeautifulSoup(r.content, 'html.parser')
         # get the title of the webpage
         title = soup.find('title').text
+        # if the title is empty, set it to No Title
         if title == "":
             title = "No title"
+        # send the passed url to the screenshot api
         parsedUrl = urllib.parse.quote_plus(url)
         screenshot_api = f"https://shot.screenshotapi.net/screenshot?token=N72DF2K-5ZZ4WCR-JJPEHAX-2E1T31G&url={parsedUrl}&width=1920&height=1080&output=image&file_type=png&wait_for_event=load"
         screenshot = requests.get(screenshot_api)
+        # open the screenshot file and writes the screenshot to it
         with open("screenshot.png", "wb") as f:
             f.write(screenshot.content)
         image = disnake.File("screenshot.png")
+        # create the embed
         webpageEmbed = disnake.Embed(
             title=title,
             description=f"[[go to webpage]]({url})",
             color=self.bot.colour_success)
+        # set the embed footer
         owner = await self.bot.fetch_user(self.bot.owner_id)
         webpageEmbed.set_footer(text="Panda Bot • EvilPanda#7288", icon_url=owner.avatar)
         webpageEmbed.set_image(file=image)
