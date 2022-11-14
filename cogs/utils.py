@@ -5,10 +5,19 @@ import requests
 from bs4 import BeautifulSoup
 import urllib.parse
 import asyncio
+import json
 
-
+# allows the cog to be loaded
 def setup(bot):
     bot.add_cog(utilsCog(bot))
+
+# gets dimensions of webpage render
+def getDimensions():
+    with open('config.json', 'r') as f:
+        data = json.load(f)
+    height = str(data["cogs"]["utils"]["webpage_render_height"])
+    width = str(data["cogs"]["utils"]["webpage_render_width"])
+    return height, width
 
 
 class utilsCog(commands.Cog):
@@ -85,7 +94,8 @@ class utilsCog(commands.Cog):
         if title == "":
             title = "No title"
         parsedUrl = urllib.parse.quote_plus(url)
-        screenshot_api = f"https://shot.screenshotapi.net/screenshot?token=N72DF2K-5ZZ4WCR-JJPEHAX-2E1T31G&url={parsedUrl}&width=1920&height=1080&output=image&file_type=png&wait_for_event=load"
+        height, width = getDimensions()
+        screenshot_api = f"https://shot.screenshotapi.net/screenshot?token=N72DF2K-5ZZ4WCR-JJPEHAX-2E1T31G&url={parsedUrl}&width={width}&height={height}&output=image&file_type=png&wait_for_event=load"
         screenshot = requests.get(screenshot_api)
         with open("screenshot.png", "wb") as f:
             f.write(screenshot.content)

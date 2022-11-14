@@ -25,7 +25,9 @@
             "active": true
         },
         "utils": {
-            "active": true
+            "active": true,
+            "webpage_render_height": 1080,
+            "webpage_render_width": 1920
         },
         "translate": {
             "active": true
