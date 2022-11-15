@@ -34,7 +34,7 @@ class suggestionsCog(commands.Cog):
         embed.set_author(name=name, icon_url=icon)
         # set the embed footer
         owner = await self.bot.fetch_user(self.bot.owner_id)
-        suggestEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
+        embed.set_footer(text=bot.footer, icon_url=owner.avatar)
         return embed
 
     async def reaction_check(self, payload):
