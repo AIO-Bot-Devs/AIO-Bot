@@ -27,16 +27,18 @@ class suggestionsCog(commands.Cog):
         self.bot = bot
 
     async def add_embed(self, description, color, name, icon):
+        bot = self.bot
         embed = disnake.Embed(
                 description=description,
                 color=color)
         embed.set_author(name=name, icon_url=icon)
         # set the embed footer
         owner = await self.bot.fetch_user(self.bot.owner_id)
-        embed.set_footer(text="Panda Bot • EvilPanda#7288", icon_url=owner.avatar)
+        suggestEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
         return embed
 
-    async def reaction_check(self, bot, payload):
+    async def reaction_check(self, payload):
+        bot = self.bot
         message = await bot.get_channel(payload.channel_id).fetch_message(payload.message_id)
         reactions = message.reactions
         oldEmbed = message.embeds[0]
@@ -58,8 +60,8 @@ class suggestionsCog(commands.Cog):
     # create a suggestion embed
     @commands.Cog.listener()
     async def on_message(self, message):
-        channels = checkChannels()
         bot = self.bot
+        channels = checkChannels()
         # if the message is in a suggestion channel and is not a bot
         if message.channel.id in channels and not message.author.bot:
             # delete the message

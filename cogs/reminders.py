@@ -55,6 +55,7 @@ class remindersCog(commands.Cog):
         ----------
         date: Your birthdate: DD/MM/YYYY
         """
+        bot = self.bot
         # try if the date is valid
         try:
             # get the current reminders
@@ -76,7 +77,7 @@ class remindersCog(commands.Cog):
             color=self.bot.colour_success)
                 # adds a footer to the embed
                 owner = await self.bot.fetch_user(self.bot.owner_id)
-                successEmbed.set_footer(text="Panda Bot • EvilPanda#7288", icon_url=owner.avatar)
+                successEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
                 successEmbed.set_thumbnail(url="https://evilpanda.me/files/notify.png")
                 await inter.response.send_message(embed=successEmbed)
             # if the birthday function is disabled then send an error message
@@ -88,7 +89,7 @@ class remindersCog(commands.Cog):
             color=self.bot.colour_error)
                 # adds a footer to the embed
                 owner = await self.bot.fetch_user(self.bot.owner_id)
-                errorEmbed.set_footer(text="Panda Bot • EvilPanda#7288", icon_url=owner.avatar)
+                errorEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
                 errorEmbed.set_thumbnail(url="https://evilpanda.me/files/error1.png")
                 await inter.response.send_message(embed=errorEmbed)
         # if the date is invalid then send an error message
@@ -100,13 +101,14 @@ class remindersCog(commands.Cog):
         color=self.bot.colour_error)
             # adds a footer to the embed
             owner = await self.bot.fetch_user(self.bot.owner_id)
-            errorEmbed.set_footer(text="Panda Bot • EvilPanda#7288", icon_url=owner.avatar)
+            errorEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
             errorEmbed.set_thumbnail(url="https://evilpanda.me/files/error1.png")
             await inter.response.send_message(embed=errorEmbed)
 
     # this subcommand will remove a birthday from the list of birthdays
     @birthday.sub_command()
     async def remove(self, inter):
+        bot = self.bot
         # get the current reminders
         reminders = await checkReminders()
         # if the birthday function is enabled then remove the birthday from the list of birthdays
@@ -122,7 +124,7 @@ class remindersCog(commands.Cog):
             color=self.bot.colour_success)
                 # adds a footer to the embed
                 owner = await self.bot.fetch_user(self.bot.owner_id)
-                successEmbed.set_footer(text="Panda Bot • EvilPanda#7288", icon_url=owner.avatar)
+                successEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
                 successEmbed.set_thumbnail(url="https://evilpanda.me/files/bin.png")
                 await inter.response.send_message(embed=successEmbed)
             # if the user doesn't have a birthday then send an error message
@@ -134,7 +136,7 @@ class remindersCog(commands.Cog):
             color=self.bot.colour_error)
                 # adds a footer to the embed
                 owner = await self.bot.fetch_user(self.bot.owner_id)
-                errorEmbed.set_footer(text="Panda Bot • EvilPanda#7288", icon_url=owner.avatar)
+                errorEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
                 errorEmbed.set_thumbnail(url="https://evilpanda.me/files/error1.png")
                 await inter.response.send_message(embed=errorEmbed)
         # if the birthday function is disabled then send an error message
@@ -146,7 +148,7 @@ class remindersCog(commands.Cog):
         color=self.bot.colour_error)
             # adds a footer to the embed
             owner = await self.bot.fetch_user(self.bot.owner_id)
-            errorEmbed.set_footer(text="Panda Bot • EvilPanda#7288", icon_url=owner.avatar)
+            errorEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
             errorEmbed.set_thumbnail(url="https://evilpanda.me/files/error1.png")
             await inter.response.send_message(embed=errorEmbed)
 
@@ -164,6 +166,7 @@ class remindersCog(commands.Cog):
         ----------
         channel: The channel to set
         """
+        bot = self.bot
         # get the current reminders
         reminders = await checkReminders()
         # changes channel.id and list of users 
@@ -179,7 +182,7 @@ class remindersCog(commands.Cog):
     color=self.bot.colour_success)
         # adds a footer to the embed
         owner = await self.bot.fetch_user(self.bot.owner_id)
-        successEmbed.set_footer(text="Panda Bot • EvilPanda#7288", icon_url=owner.avatar)
+        successEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
         successEmbed.set_thumbnail(url="https://evilpanda.me/files/success.png")
         await inter.response.send_message(embed=successEmbed)
 
@@ -191,6 +194,7 @@ class remindersCog(commands.Cog):
         ----------
         channel: The channel to remove
         """
+        bot = self.bot
         # get the current reminders
         reminders = await checkReminders()
         # checks if server in reminders
@@ -205,7 +209,7 @@ class remindersCog(commands.Cog):
         color=self.bot.colour_success)
             # adds a footer to the embed
             owner = await self.bot.fetch_user(self.bot.owner_id)
-            successEmbed.set_footer(text="Panda Bot • EvilPanda#7288", icon_url=owner.avatar)
+            successEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
             successEmbed.set_thumbnail(url="https://evilpanda.me/files/bin.png")
             await inter.response.send_message(embed=successEmbed)
         # if the server isn't in the list of servers then send an error message
@@ -217,6 +221,6 @@ class remindersCog(commands.Cog):
         color=self.bot.colour_error)
             # adds a footer to the embed
             owner = await self.bot.fetch_user(self.bot.owner_id)
-            errorEmbed.set_footer(text="Panda Bot • EvilPanda#7288", icon_url=owner.avatar)
+            errorEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
             errorEmbed.set_thumbnail(url="https://evilpanda.me/files/error1.png")
             await inter.response.send_message(embed=errorEmbed)
