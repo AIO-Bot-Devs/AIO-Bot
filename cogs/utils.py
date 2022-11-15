@@ -5,29 +5,19 @@ import requests
 from bs4 import BeautifulSoup
 import urllib.parse
 import asyncio
-
-# function to genertate a progress bar
-def progressBar(percentage):
-    bar = "["
-    for i in range(25):
-        if i < percentage / 4:
-            bar += "#"
-        else:
-            bar += "--"
-    bar += "]"
-    return bar
-
-# WTF WHO DOES THIS
-def listToString(list):
-    string = ""
-    for i in list:
-        string += i + ", "
-    string = string[:-2]
-    return string
+import json
 
 # allows the cog to be loaded
 def setup(bot):
     bot.add_cog(utilsCog(bot))
+
+# gets dimensions of webpage render
+def getDimensions():
+    with open('config.json', 'r') as f:
+        data = json.load(f)
+    height = str(data["cogs"]["utils"]["webpage_render_height"])
+    width = str(data["cogs"]["utils"]["webpage_render_width"])
+    return height, width
 
 # class for all the utility commands
 class utilsCog(commands.Cog):
@@ -43,6 +33,7 @@ class utilsCog(commands.Cog):
         ----------
         user: The user to get it from
         """
+        bot = self.bot
         # create the embed
         avatarEmbed = disnake.Embed(
             title=f"User Avatar",
@@ -51,7 +42,7 @@ class utilsCog(commands.Cog):
         avatarEmbed.set_author(name=user)
         # set the embed footer
         owner = await self.bot.fetch_user(self.bot.owner_id)
-        avatarEmbed.set_footer(text="Panda Bot • EvilPanda#7288", icon_url=owner.avatar)
+        avatarEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
         await inter.response.send_message(embed=avatarEmbed)
 
     # test command to edit a message
@@ -79,6 +70,7 @@ class utilsCog(commands.Cog):
         ----------
         url: The url of the webpage
         """
+        bot = self.bot
         # adds a waiting message
         await inter.response.defer(with_message=True)
         # if the url does not start with http/s, add it
@@ -95,7 +87,7 @@ class utilsCog(commands.Cog):
                 color=self.bot.colour_error)
             # set the embed footer
             owner = await self.bot.fetch_user(self.bot.owner_id)
-            errorEmbed.set_footer(text="Panda Bot • EvilPanda#7288", icon_url=owner.avatar)
+            errorEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
             errorEmbed.set_thumbnail(url="https://evilpanda.me/files/error1.png")
             await inter.edit_original_message(embed=errorEmbed)
             return
@@ -108,7 +100,8 @@ class utilsCog(commands.Cog):
             title = "No title"
         # send the passed url to the screenshot api
         parsedUrl = urllib.parse.quote_plus(url)
-        screenshot_api = f"https://shot.screenshotapi.net/screenshot?token=N72DF2K-5ZZ4WCR-JJPEHAX-2E1T31G&url={parsedUrl}&width=1920&height=1080&output=image&file_type=png&wait_for_event=load"
+        height, width = getDimensions()
+        screenshot_api = f"https://shot.screenshotapi.net/screenshot?token=N72DF2K-5ZZ4WCR-JJPEHAX-2E1T31G&url={parsedUrl}&width={width}&height={height}&output=image&file_type=png&wait_for_event=load"
         screenshot = requests.get(screenshot_api)
         # open the screenshot file and writes the screenshot to it
         with open("screenshot.png", "wb") as f:
@@ -121,7 +114,7 @@ class utilsCog(commands.Cog):
             color=self.bot.colour_success)
         # set the embed footer
         owner = await self.bot.fetch_user(self.bot.owner_id)
-        webpageEmbed.set_footer(text="Panda Bot • EvilPanda#7288", icon_url=owner.avatar)
+        webpageEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
         webpageEmbed.set_image(file=image)
         await inter.edit_original_message(embed=webpageEmbed)
 

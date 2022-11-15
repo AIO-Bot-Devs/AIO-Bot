@@ -111,7 +111,7 @@ class newsCog(commands.Cog):
                 newsEmbed.add_field(name=headlines[4]['headline'], value=f"{headlines[4]['summary']} [[read more]]({headlines[4]['url']})", inline=False)
                 # adds a footer
                 owner = await bot.fetch_user(self.bot.owner_id)
-                newsEmbed.set_footer(text="Panda Bot • EvilPanda#7288", icon_url=owner.avatar)
+                newsEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
                 newsEmbed.set_thumbnail(url="https://evilpanda.me/files/news.png")
                 await inter.response.send_message(embed=newsEmbed)
             # if the news is empty, it sends an error message
@@ -122,7 +122,7 @@ class newsCog(commands.Cog):
                     color=self.bot.colour_error)
                 # adds a footer
                 owner = await bot.fetch_user(self.bot.owner_id)
-                errorEmbed.set_footer(text="Panda Bot • EvilPanda#7288", icon_url=owner.avatar)
+                errorEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
                 errorEmbed.set_thumbnail(url="https://evilpanda.me/files/error1.png")
                 await inter.response.send_message(embed=errorEmbed)
         # if the source is Gnews API, it gets the news from Gnews API
@@ -143,7 +143,7 @@ class newsCog(commands.Cog):
                 newsEmbed.add_field(name=headlines[1][4]['title'], value=f"{headlines[1][4]['description']} [[read more]]({headlines[1][4]['url']})", inline=False)
                 # adds a footer
                 owner = await bot.fetch_user(self.bot.owner_id)
-                newsEmbed.set_footer(text="Panda Bot • EvilPanda#7288", icon_url=owner.avatar)
+                newsEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
                 newsEmbed.set_thumbnail(url="https://evilpanda.me/files/news.png")
                 await inter.response.send_message(embed=newsEmbed)
             # if the news is empty, it sends an error message
@@ -154,7 +154,7 @@ class newsCog(commands.Cog):
                     color=self.bot.colour_error)
                 # adds a footer
                 owner = await bot.fetch_user(self.bot.owner_id)
-                errorEmbed.set_footer(text="Panda Bot • EvilPanda#7288", icon_url=owner.avatar)
+                errorEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
                 errorEmbed.set_thumbnail(url="https://evilpanda.me/files/error1.png")
                 await inter.response.send_message(embed=errorEmbed)
 
@@ -185,7 +185,7 @@ class newsCog(commands.Cog):
                 weatherEmbed.add_field(name="Wind", value=f"{weather[3]} m/s")
                 # adds a footer
                 owner = await bot.fetch_user(self.bot.owner_id)
-                weatherEmbed.set_footer(text="Panda Bot • EvilPanda#7288", icon_url=owner.avatar)
+                weatherEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
                 weatherEmbed.set_thumbnail(url=f"https://openweathermap.org/img/wn/{weather[4]}@2x.png")
                 await inter.response.send_message(embed=weatherEmbed)
             # if the weather is empty, it sends an error message
@@ -197,7 +197,7 @@ class newsCog(commands.Cog):
                 color=self.bot.colour_error)
                 # adds a footer
                 owner = await bot.fetch_user(self.bot.owner_id)
-                errorEmbed.set_footer(text="Panda Bot • EvilPanda#7288", icon_url=owner.avatar)
+                errorEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
                 errorEmbed.set_thumbnail(url="https://evilpanda.me/files/error1.png")
                 await inter.response.send_message(embed=errorEmbed)
         # if the coordinates are empty, it sends an error message
@@ -209,6 +209,6 @@ class newsCog(commands.Cog):
                 color=self.bot.colour_error)
             # adds a footer
             owner = await bot.fetch_user(self.bot.owner_id)
-            errorEmbed.set_footer(text="Panda Bot • EvilPanda#7288", icon_url=owner.avatar)
+            errorEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
             errorEmbed.set_thumbnail(url="https://evilpanda.me/files/error1.png")
             await inter.response.send_message(embed=errorEmbed)

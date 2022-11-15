@@ -6,10 +6,16 @@
     "status": "Online",
     "activity": "with code :)",
     "uptime_channel": 1016416185660743710,
+    "footer": "AIO Bot • https://discord.gg/Zu6pDEBCjY",
     "colours": {
         "neutral": "0x03d7fc",
         "success": "0x00ff22",
         "error": "0xff0000"
+    },
+    "emojis": {
+        "check": "<:check:1002964750356987935>",
+        "cross": "<:cross:1002964682585407591>",
+        "loading": "<a:loading:1005134280839659540>"
     },
     "cogs": {
         "suggestions": {
@@ -19,7 +25,9 @@
             "active": true
         },
         "utils": {
-            "active": true
+            "active": true,
+            "webpage_render_height": 1080,
+            "webpage_render_width": 1920
         },
         "translate": {
             "active": true
