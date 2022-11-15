@@ -31,6 +31,7 @@ class minecraftCog(commands.Cog):
         ----------
         username: The username of the account
         """
+        bot = self.bot
         # bot is thinking
         await inter.response.defer(with_message=True)
         # get the data from the api, should update to use aiohttp
@@ -83,7 +84,7 @@ class minecraftCog(commands.Cog):
                 userEmbed.add_field(name="NameMC Friends (0)", value="None", inline=False)
             # adds pfp and footer to the embed
             owner = await self.bot.fetch_user(self.bot.owner_id)
-            userEmbed.set_footer(text="Panda Bot • EvilPanda#7288", icon_url=owner.avatar)
+            userEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
             await inter.edit_original_message(embed=userEmbed)
         # if the user is not found, then send an error message
         elif response.status_code == 404:
@@ -92,7 +93,7 @@ class minecraftCog(commands.Cog):
                 description=f"The user '{username}' does not exist.",
                 color=self.bot.colour_error)
             owner = await self.bot.fetch_user(self.bot.owner_id)
-            errorEmbed.set_footer(text="Panda Bot • EvilPanda#7288", icon_url=owner.avatar)
+            errorEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
             errorEmbed.set_thumbnail(url="https://evilpanda.me/files/error1.png")
             await inter.edit_original_message(embed=errorEmbed)
         # if the username is invalid, then send an error message
@@ -102,7 +103,7 @@ class minecraftCog(commands.Cog):
                 description=f"The username '{username}' is invalid.",
                 color=self.bot.colour_error)
             owner = await self.bot.fetch_user(self.bot.owner_id)
-            errorEmbed.set_footer(text="Panda Bot • EvilPanda#7288", icon_url=owner.avatar)
+            errorEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
             errorEmbed.set_thumbnail(url="https://evilpanda.me/files/error1.png")
             await inter.edit_original_message(embed=errorEmbed)
         # if any other error occurs, then send an error message
@@ -112,7 +113,7 @@ class minecraftCog(commands.Cog):
                 description=f"Error {response.status_code}. {response.error}",
                 color=self.bot.colour_error)
             owner = await self.bot.fetch_user(self.bot.owner_id)
-            errorEmbed.set_footer(text="Panda Bot • EvilPanda#7288", icon_url=owner.avatar)
+            errorEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
             errorEmbed.set_thumbnail(url="https://evilpanda.me/files/error1.png")
             await inter.edit_original_message(embed=errorEmbed)
     
@@ -125,10 +126,12 @@ class minecraftCog(commands.Cog):
         address: The address of the server
         port: The port of the server (default 25565)
         """
-        address = address.replace(" ", "").lower()
+        bot = self.bot
+        address = address.strip().lower()
         # sends a loading message
         await inter.response.defer(with_message=True)
         # gets the server data from the api
+        # checks if port is 25565 so the image doesn't contain port if it's default
         if port == 25565:
             api = f"https://api.mcsrvstat.us/2/{address}"
         else:
@@ -143,11 +146,12 @@ class minecraftCog(commands.Cog):
             if data['online']:
                 serverEmbed = disnake.Embed(
                     title=f"Server: {address}",
-                    description="<:check:1002964750356987935> Online",
+                    description=f"{bot.emoji_check} Online",
                     color=self.bot.colour_success
                 )
                 # if there is an icon, then set the thumbnail to the icon
                 if data["icon"]:
+                    # decode the icon in api from base64 to bytes and write to an image file
                     with open("icon.png", "wb") as fh:
                         fh.write(base64.decodebytes(data["icon"].split(',')[1].encode()))
                     serverEmbed.set_thumbnail(file=disnake.File("icon.png"))
@@ -158,7 +162,7 @@ class minecraftCog(commands.Cog):
                 serverEmbed.add_field(name="Port", value=port, inline=False)
                 serverEmbed.add_field(name="Version", value=data['version'], inline=False)
                 serverEmbed.add_field(name="Players", value=f"{data['players']['online']}/{data['players']['max']}", inline=False)
-                # if the server software dunno what that is ngl
+                # if the server software is available in api then add it to the embed 
                 if 'software' in data:
                     serverEmbed.add_field(name="Software", value=data['software'], inline=False)
                 # add the server banner to the embed
@@ -167,25 +171,29 @@ class minecraftCog(commands.Cog):
             else:
                 serverEmbed = disnake.Embed(
                     title=f"Server: '{address}'",
-                    description="<:cross:1002964682585407591> Offline",
+                    description=f"{bot.emoji_cross} Offline",
                     color=self.bot.colour_error
                 )
                 # set the thumbnail to the default icon
                 serverEmbed.set_thumbnail(file=disnake.File("default_icon_64.png"))
                 # add banner to the embed
                 serverEmbed.set_image(url=img)
+            # add footer to embed
+            owner = await self.bot.fetch_user(self.bot.owner_id)
+            serverEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
             # edit the original message with the embed
             await inter.edit_original_message(embed=serverEmbed)
         # if the api returns an error, then send an error message
         else:
             errorEmbed = disnake.Embed(
                 title=f"API Error",
-                description=f"Error {response.status_code} occured with server status api.",
+                description=f"Error {response.status_code} occured with server status api. Please report this",
                 color=self.bot.colour_error)
-            # might want to untab this so it's added to every embed
             owner = await self.bot.fetch_user(self.bot.owner_id)
-            errorEmbed.set_footer(text="Panda Bot • EvilPanda#7288", icon_url=owner.avatar)
+            # add footer to embed
+            errorEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
             errorEmbed.set_thumbnail(url="https://evilpanda.me/files/error1.png")
+            # edit the original message with the embed
             await inter.edit_original_message(embed=errorEmbed)
 
 

@@ -38,8 +38,9 @@ class translateCog(commands.Cog):
         destination: The destination language
         source: The source language (optional)
         """
-        await inter.response.send_message("<a:loading:1005134280839659540> This command is currently in progress.")
-        # TRY TO FIX AT SOME POINT LOL, AND ADD COMMENTS
+        bot = self.bot
+        await inter.response.send_message(f"{bot.emoji_loading} This command is currently in progress.")
+        # TRY TO FIX AT SOME POINT LOL
         # code = getCode(destination)
         # translator = Translator()
         # if source != None:
@@ -51,7 +52,7 @@ class translateCog(commands.Cog):
         #     description=result.text,
         #     colour=self.bot.colour_success)
         # owner = await self.bot.fetch_user(self.bot.owner_id)
-        # translateEmbed.set_footer(text="Panda Bot • EvilPanda#7288", icon_url=owner.avatar)
+        # translateEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
         # await inter.response.send_message(embed=translateEmbed)
 
     

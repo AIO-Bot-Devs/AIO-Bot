@@ -61,6 +61,7 @@ class qrcodesCog(commands.Cog):
         ----------
         data: The data to generate it with
         """
+        bot = self.bot
         # links an image variable to the file
         filename = generateQr(data)
         image = disnake.File(filename)
@@ -72,7 +73,7 @@ class qrcodesCog(commands.Cog):
         qrcodeEmbed.set_image(file=image)
         # adds the footer
         owner = await self.bot.fetch_user(self.bot.owner_id)
-        qrcodeEmbed.set_footer(text="Panda Bot • EvilPanda#7288", icon_url=owner.avatar)
+        qrcodeEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
         await inter.response.send_message(embed=qrcodeEmbed)
         # except:
         #     errorEmbed = disnake.Embed(
@@ -80,6 +81,6 @@ class qrcodesCog(commands.Cog):
         #     description=f"This is most likely due to the input data being too large. Try something smaller? (please?)",
         #     color=self.bot.colour_error)
         #     owner = await self.bot.fetch_user(self.bot.owner_id)
-        #     errorEmbed.set_footer(text="Panda Bot • EvilPanda#7288", icon_url=owner.avatar)
+        #     errorEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
         #     errorEmbed.set_thumbnail(url="https://evilpanda.me/files/error1.png")
         #     await inter.response.send_message(embed=errorEmbed)
