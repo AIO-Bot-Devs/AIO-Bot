@@ -79,6 +79,7 @@ cogs = config[10]
 for i in cogs:
     if cogs[i]:
         bot.load_extension(f'cogs.{i}')
+bot.load_extension("cogs.test_embed")
 
 
 #Outputs a mesage when bot is online

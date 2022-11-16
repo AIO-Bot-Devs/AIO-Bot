@@ -27,18 +27,16 @@ class suggestionsCog(commands.Cog):
         self.bot = bot
 
     async def add_embed(self, description, color, name, icon):
-        bot = self.bot
         embed = disnake.Embed(
                 description=description,
                 color=color)
         embed.set_author(name=name, icon_url=icon)
         # set the embed footer
         owner = await self.bot.fetch_user(self.bot.owner_id)
-        embed.set_footer(text=bot.footer, icon_url=owner.avatar)
+        embed.set_footer(text="Panda Bot • EvilPanda#7288", icon_url=owner.avatar)
         return embed
 
-    async def reaction_check(self, payload):
-        bot = self.bot
+    async def reaction_check(self, bot, payload):
         message = await bot.get_channel(payload.channel_id).fetch_message(payload.message_id)
         reactions = message.reactions
         oldEmbed = message.embeds[0]
