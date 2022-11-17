@@ -1,14 +1,17 @@
+import datetime
+import json
 import os
-from dotenv import load_dotenv
+
+import aiohttp
 import disnake
 from disnake import MessageInteraction
 from disnake.ext import commands
-from disnake.ui import View, button, Select
-import aiohttp
-import datetime
-from table2ascii import table2ascii as t2a, Alignment
+from disnake.ui import Select, View, button
+from dotenv import load_dotenv
 from PIL import Image, ImageDraw, ImageFont
-import json
+from table2ascii import Alignment
+from table2ascii import table2ascii as t2a
+
 from .button_menu import ButtonMenu
 
 # getting bot token from token.env
@@ -35,39 +38,62 @@ class TableCommands(commands.Cog):
             # base_json is used to reduce the length of the code
             base_json = data["response"][0]["league"]["standings"][0]
             # width grabs the max length of a team name
-            width = len(max([base_json[x]["team"]["name"] for x in range(len(base_json))], key=len))
-            body = [[base_json[x]["rank"], 
-                    base_json[x]["team"]["name"], 
-                    base_json[x]["all"]["played"], 
+            width = len(
+                max(
+                    [base_json[x]["team"]["name"] for x in range(len(base_json))],
+                    key=len,
+                )
+            )
+            body = [
+                [
+                    base_json[x]["rank"],
+                    base_json[x]["team"]["name"],
+                    base_json[x]["all"]["played"],
                     base_json[x]["all"]["win"],
-                    base_json[x]["all"]["draw"], 
+                    base_json[x]["all"]["draw"],
                     base_json[x]["all"]["lose"],
                     base_json[x]["all"]["goals"]["for"],
                     base_json[x]["all"]["goals"]["against"],
                     base_json[x]["goalsDiff"],
-                    base_json[x]["points"]] for x in range(len(base_json))]
+                    base_json[x]["points"],
+                ]
+                for x in range(len(base_json))
+            ]
             # create the table using table2ascii
             table = t2a(
-                header=["Rank", "Team", "Played", "Wins", "Draws", "Losses", "GF", "GA", "GD", "Points"],
+                header=[
+                    "Rank",
+                    "Team",
+                    "Played",
+                    "Wins",
+                    "Draws",
+                    "Losses",
+                    "GF",
+                    "GA",
+                    "GD",
+                    "Points",
+                ],
                 body=body,
                 first_col_heading=True,
-                column_widths=[8, width+2, 8, 8, 8, 8, 8, 8, 8, 8],
+                column_widths=[8, width + 2, 8, 8, 8, 8, 8, 8, 8, 8],
                 alignments=[Alignment.LEFT] + [Alignment.LEFT] + [Alignment.CENTER] * 8,
             )
-            return table, data['response'][0]['league']['name']
+            return table, data["response"][0]["league"]["name"]
 
         async def image_gen(table):
-            # create a new image 
-            img_size = (2500,1000)
+            # create a new image
+            img_size = (2500, 1000)
             # img_xy is the centre of the image used to anchor the text
-            img_xy = tuple(size/2 for size in img_size)
+            img_xy = tuple(size / 2 for size in img_size)
             # 47, 49, 95 is the discord background colour
-            out = Image.new('RGB', img_size, (47, 49, 54))
+            out = Image.new("RGB", img_size, (47, 49, 54))
             # set font to a variable
-            fnt = ImageFont.truetype('ANDALEMO.ttf', 40)
+            fnt = ImageFont.truetype("ANDALEMO.ttf", 40)
             # draw the text onto the image, fill is the colour of the text
             d = ImageDraw.Draw(out)
-            d.multiline_text(xy=img_xy, text=table, font=fnt, fill=(185, 187, 190), anchor="mm")
+            d.multiline_text(
+                xy=img_xy, text=table, font=fnt, fill=(185, 187, 190), anchor="mm"
+            )
             # save image to file
             file_name = "table.png"
             out.save(file_name)
@@ -78,18 +104,20 @@ class TableCommands(commands.Cog):
             table = table.splitlines()
             # split top 10 and the rest of the entries into seperate lists and join them to strings
             top = """```{0}\n{1}```""".format("\n".join(table[:13]), table[-1])
-            bottom = """```{0}\n{1}```""".format("\n".join(table[:3]),"\n".join(table[13:]))
+            bottom = """```{0}\n{1}```""".format(
+                "\n".join(table[:3]), "\n".join(table[13:])
+            )
             # pages is used to in the button menu
             pages = [top, bottom]
             return pages
-        
+
         async def make_request(abs_file_path):
             # data required to make the request
             url = f"https://v3.football.api-sports.io/standings?league={league_id}&season=2022"
-            payload={}
+            payload = {}
             headers = {
-                'x-rapidapi-key': token,
-                'x-rapidapi-host': 'v3.football.api-sports.io'
+                "x-rapidapi-key": token,
+                "x-rapidapi-host": "v3.football.api-sports.io",
             }
             # sends request to the api using aiohttp
             async with aiohttp.ClientSession() as session:
@@ -106,7 +134,13 @@ class TableCommands(commands.Cog):
                 return json.load(f)
 
         # list of leagues and their ids for the select menu, will be updated later
-        leagues = [["Premier League", 39], ["La Liga", 140], ["Bundesliga", 78], ["Serie A", 135], ["Ligue 1", 61]]
+        leagues = [
+            ["Premier League", 39],
+            ["La Liga", 140],
+            ["Bundesliga", 78],
+            ["Serie A", 135],
+            ["Ligue 1", 61],
+        ]
         options = []
         for league in leagues:
             options.append(disnake.SelectOption(label=league[0], value=league[1]))
@@ -115,7 +149,7 @@ class TableCommands(commands.Cog):
             placeholder="Please select a league",
             min_values=1,
             max_values=1,
-            options=options
+            options=options,
         )
         # send the select menu
         await inter.response.send_message(components=select, ephemeral=True)
@@ -134,9 +168,11 @@ class TableCommands(commands.Cog):
             with open(abs_file_path, "r") as f:
                 data = json.load(f)
             # if the data is older than 1 day, then send a new request
-            if datetime.datetime.now() - datetime.datetime.strptime(data["time"], "%Y-%m-%d %H:%M:%S.%f") > datetime.timedelta(days=1):
+            if datetime.datetime.now() - datetime.datetime.strptime(
+                data["time"], "%Y-%m-%d %H:%M:%S.%f"
+            ) > datetime.timedelta(days=1):
                 data = await make_request(abs_file_path)
-        else:                
+        else:
             data = await make_request(abs_file_path)
 
         # generating the table using table2ascii
@@ -149,9 +185,11 @@ class TableCommands(commands.Cog):
             await new_inter.response.send_message(embed=embed)
         elif not img:
             pages = await table_format(table)
-            await new_inter.response.send_message(content=pages[0], view=ButtonMenu(pages=pages, timeout=60))
+            await new_inter.response.send_message(
+                content=pages[0], view=ButtonMenu(pages=pages, timeout=60)
+            )
+
 
 # allows the cog to be loaded
 def setup(bot: commands.Bot):
     bot.add_cog(TableCommands(bot))
-
