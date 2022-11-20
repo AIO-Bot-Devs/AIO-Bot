@@ -1,14 +1,19 @@
-#Imports all the required libraries
+# Imports all the required libraries
+import asyncio
+import json
+import os
+
+import aiosqlite
 import disnake
 from disnake.ext import commands
-import os
 from dotenv import load_dotenv
-import json
+
+from cogs.models import main
 
 
-#Loads the config file
+# Loads the config file
 def getConfig():
-    with open('config.json', 'r') as f:
+    with open("config.json", "r") as f:
         data = json.load(f)
     # grabs all the config data
     owner = data["owner"]
@@ -25,45 +30,57 @@ def getConfig():
     cogs = {}
     for i in data["cogs"]:
         cogs[i] = data["cogs"][i]["active"]
-    return owner, dev, test_guilds, prefix, status, activity, uptime_channel, footer, colours, emojis, cogs
+    return (
+        owner,
+        dev,
+        test_guilds,
+        prefix,
+        status,
+        activity,
+        uptime_channel,
+        footer,
+        colours,
+        emojis,
+        cogs,
+    )
 
 
-#Define intents for bot (make these more specific later so bot doesn't require unnecessary intents/permissions)
+# Define intents for bot (make these more specific later so bot doesn't require unnecessary intents/permissions)
 intents = disnake.Intents.default()
 intents.message_content = True
 intents.members = True
 intents.reactions = True
 
 
-#Get config for bot
+# Get config for bot
 config = getConfig()
 
 
-#Define the test guilds if the bot is in dev mode
+# Define the test guilds if the bot is in dev mode
 if config[1] == True:
     bot = commands.Bot(
-    command_prefix=config[3],
-    test_guilds=config[2],
-    sync_commands_debug=True,
-    intents=intents,
-    activity = disnake.Activity(name=config[5])
-)
-#Define the bot if the bot is not in dev mode (no test guilds)
+        command_prefix=config[3],
+        test_guilds=config[2],
+        sync_commands_debug=True,
+        intents=intents,
+        activity=disnake.Activity(name=config[5]),
+    )
+# Define the bot if the bot is not in dev mode (no test guilds)
 else:
     bot = commands.Bot(
         command_prefix=config[3],
         sync_commands_debug=True,
         intents=intents,
-        activity = disnake.Activity(name=config[5])
+        activity=disnake.Activity(name=config[5]),
     )
 
 
-#Setup global variables
+# Setup global variables
 # convert string hex color codes from config to int with base 16, then add them to bot
 bot.colour_neutral = int(config[8]["neutral"], base=16)
 bot.colour_success = int(config[8]["success"], base=16)
 bot.colour_error = int(config[8]["error"], base=16)
-# add emoji codes from config to bot 
+# add emoji codes from config to bot
 bot.emoji_check = config[9]["check"]
 bot.emoji_cross = config[9]["cross"]
 bot.emoji_loading = config[9]["loading"]
@@ -72,24 +89,31 @@ bot.owner_id = config[0]
 bot.footer = config[7]
 
 
-#Adds cogs to the main bot (if they are enabled in config.json)
+# Adds cogs to the main bot (if they are enabled in config.json)
 cogs = config[10]
 
 # loads each cog
 for i in cogs:
     if cogs[i]:
-        bot.load_extension(f'cogs.{i}')
+        bot.load_extension(f"cogs.{i}")
 bot.load_extension("cogs.test_embed")
+asyncio.run(main())
 
 
-#Outputs a mesage when bot is online
-#Remove this and replace with an uptime bot at some point - API calls are not recommended in on_ready
+# Outputs a mesage when bot is online
+# Remove this and replace with an uptime bot at some point - API calls are not recommended in on_ready
 @bot.event
 async def on_ready():
     print("------")
     print(f"Logged in as {bot.user}")
     print("------")
-    try:    
+    # async with aiosqlite.connect("test.db") as db:
+    #    async with db.cursor() as cursor:
+    #        await cursor.execute(
+    #            "CREATE TABLE IF NOT EXISTS test (message_id INTEGER, score INTEGER)"
+    #        )
+    #    await db.commit()
+    try:
         uptime = await bot.fetch_channel(config[6])
         if config[1] == True:
             dev = bot.emoji_check
@@ -102,15 +126,14 @@ async def on_ready():
                 cogs_string += f">   • {bot.emoji_check} {i} enabled"
             else:
                 cogs_string += f">   • {bot.emoji_cross} {i} disabled"
-        await uptime.send(f"{bot.emoji_check} **{bot.user.mention} online!**\n> Disnake: {disnake.__version__}\n> Latency: {int(bot.latency * 1000)}ms\n> Dev mode: {dev}\n> Guilds: {len(bot.guilds)}\n> Cogs: {cogs_string}")
+        await uptime.send(
+            f"{bot.emoji_check} **{bot.user.mention} online!**\n> Disnake: {disnake.__version__}\n> Latency: {int(bot.latency * 1000)}ms\n> Dev mode: {dev}\n> Guilds: {len(bot.guilds)}\n> Cogs: {cogs_string}"
+        )
     except:
         print("Uptime channel not found")
 
 
-        
-
-
-#Make this at some point lol
+# Make this at some point lol
 # @bot.slash_command()
 # async def setup(inter):
 #     setupEmbed = disnake.Embed(
@@ -123,6 +146,6 @@ async def on_ready():
 #     await inter.response.send_message(embed=setupEmbed)
 
 
-#Runs the bot using token from .env file
+# Runs the bot using token from .env file
 load_dotenv()
-bot.run(os.getenv('DISCORD_TOKEN'))
+bot.run(os.getenv("DISCORD_TOKEN"))

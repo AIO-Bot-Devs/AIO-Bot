@@ -21,3 +21,9 @@ test.py
 
 # allow default_icon_64.png using exception
 !default_icon_64.png
+
+# ignore all vscode settings
+.vscode
+
+# ignore all database files
+*.db

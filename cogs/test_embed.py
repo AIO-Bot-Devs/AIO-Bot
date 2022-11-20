@@ -1,9 +1,13 @@
 """This file is used to test the embeds.py file. It is not intended to be used in production."""
+import os.path
+
 import disnake
 from disnake.ext import commands
 from disnake.ui import Button
+from sqlalchemy.future import select
 
 from .embeds import NewEmbed
+from .models import Suggestions, async_session
 
 
 def setup(bot):
@@ -26,22 +30,27 @@ class TestEmbed(commands.Cog):
         await inter.response.send_message(
             embed=embed, components=[up_button, down_button]
         )
+        msg = await inter.original_response()
+        rating = await add_suggestion(msg.id, 0)
 
     @commands.Cog.listener()
     async def on_button_click(self, inter: Button):
         """This listener changes the colour of the embed when a button is clicked."""
         if inter.component.label == "up":
-            embed = NewEmbed(
-                "test", description="this is a test", field_list=[("test", "up")]
-            )
-            embed.set_color(self.bot.colour_success)
-            await inter.response.edit_message(embed=embed)
+            rating = await add_suggestion(inter.message.id, 1)
         elif inter.component.label == "down":
-            embed = NewEmbed(
-                "test", description="this is a test", field_list=[("test", "down")]
-            )
-            embed.set_color(self.bot.colour_error)
-            await inter.response.edit_message(embed=embed)
+            rating = await add_suggestion(inter.message.id, -1)
+        embed = NewEmbed(
+            "test", description="this is a test", field_list=[("test", "down")]
+        )
+        if rating > 0:
+            color = self.bot.colour_success
+        elif rating < 0:
+            color = self.bot.colour_error
+        else:
+            color = self.bot.colour_neutral
+        embed.set_color(color)
+        await inter.response.edit_message(embed=embed)
 
     # @commands.Cog.listener()
     # async def on_raw_reaction_add(self, payload):
@@ -74,3 +83,19 @@ class TestEmbed(commands.Cog):
 #        embed = message.embeds[0]
 #        embed = NewEmbed.set_color(embed, self.bot.colour_success)
 #        await payload.response.edit_message(embed=embed)
+async def add_suggestion(message_id, rating):
+    """Add a suggestion to the database."""
+    async with async_session() as session:
+        async with session.begin():
+            result = await session.execute(
+                select(Suggestions).where(Suggestions.message_id == message_id)
+            )
+            rating_row = result.scalars().first()
+            if rating_row is None:
+                session.add(Suggestions(message_id=message_id, rating=rating))
+            else:
+                rating_row.rating += rating
+        await session.commit()
+    if rating_row is None:
+        return rating
+    return rating_row.rating
