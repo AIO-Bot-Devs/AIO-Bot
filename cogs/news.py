@@ -1,10 +1,11 @@
 import disnake
 from disnake.ext import commands
-import requests
+import aiohttp
 import json
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 import os
+import asyncio
 
 # loads tokens from .env file
 load_dotenv()
@@ -16,20 +17,20 @@ def setup(bot):
     bot.add_cog(newsCog(bot))
 
 # grabs the news from gnews
-def getHeadlinesGnews():
-    response = requests.get(f"https://gnews.io/api/v4/top-headlines?token={news_token}&lang=en")
-    if response.status_code == 200:
-        data = json.loads(response.text)
-        articles = data['articles']
-        return True, articles
-    else:
-        return False, response.status_code
+async def getHeadlinesGnews():
+    async with aiohttp.request('GET', f"https://gnews.io/api/v4/top-headlines?token={news_token}&lang=en") as response:
+        if response.status == 200:
+            data = await response.json()
+            articles = data['articles']
+            return True, articles
+        else:
+            return False, response.status
 
 # this just works 
-def getHeadlinesBBC():
+async def getHeadlinesBBC():
     # Not my code lmao: https://jonathansoma.com/lede/foundations-2017/classes/adv-scraping/scraping-bbc/
-    response = requests.get('http://www.bbc.com/news')
-    doc = BeautifulSoup(response.text, 'html.parser')
+    async with aiohttp.request('GET', f"http://www.bbc.com/news") as response:
+        doc = BeautifulSoup(await response.text(), 'html.parser')
     # Start with an empty list
     stories_list = []
     stories = doc.find_all('div', { 'class': 'gs-c-promo' })
@@ -48,36 +49,36 @@ def getHeadlinesBBC():
     return stories_list
 
 # gets the coordinates of the location
-def getCoords(city):
+async def getCoords(city):
     # sends a request to the weather api
-    response = requests.get(f"http://api.openweathermap.org/geo/1.0/direct?q={city}&appid={weather_token}")
-    # if the request is successful, it returns the coordinates of the city, otherwise it returns the error code
-    if response.status_code == 200:
-        data = json.loads(response.text)
-        if data == []:
-            return False, 400
+    async with aiohttp.request('GET', f"http://api.openweathermap.org/geo/1.0/direct?q={city}&appid={weather_token}") as response:
+        # if the request is successful, it returns the coordinates of the city, otherwise it returns the error code
+        if response.status == 200:
+            data = await response.json()
+            if data == []:
+                return False, 400
+            else:
+                lat = data[0]['lat']
+                lon = data[0]['lon']
+                city = data[0]['name']
+                return True, lat, lon, city
         else:
-            lat = data[0]['lat']
-            lon = data[0]['lon']
-            city = data[0]['name']
-            return True, lat, lon, city
-    else:
-        return False, response.status_code
+            return False, response.status
 
 # gets the weather data based on the coordinates
-def getWeather(lat, lon):
+async def getWeather(lat, lon):
     # sends a request to the weather api with the coordinates
-    response = requests.get(f"https://api.openweathermap.org/data/2.5/weather?lat={str(lat)}&lon={str(lon)}&units=metric&appid={weather_token}")
-    # if the request is successful, it returns the weather data, otherwise it returns the error code
-    if response.status_code == 200:
-        data = json.loads(response.text)
-        general = data['weather'][0]['main']
-        temp = data['main']['temp']
-        wind = data['wind']['speed']
-        icon = data['weather'][0]['icon']
-        return True, general, temp, wind, icon
-    else:
-        return False, response.status_code
+    async with aiohttp.request('GET', f"https://api.openweathermap.org/data/2.5/weather?lat={str(lat)}&lon={str(lon)}&units=metric&appid={weather_token}") as response:
+        # if the request is successful, it returns the weather data, otherwise it returns the error code
+        if response.status == 200:
+            data = await response.text()
+            general = data['weather'][0]['main']
+            temp = data['main']['temp']
+            wind = data['wind']['speed']
+            icon = data['weather'][0]['icon']
+            return True, general, temp, wind, icon
+        else:
+            return False, response.status
 
 # class for all the commands
 class newsCog(commands.Cog):
@@ -96,7 +97,7 @@ class newsCog(commands.Cog):
         # if the source is BBC, it gets the news from BBC, otherwise it gets the news from Gnews
         if source == "BBC":
             # calls the function to get the news
-            headlines = getHeadlinesBBC() 
+            headlines = await getHeadlinesBBC()
             # if the news is empty, it sends an error message, otherwise it sends the news
             if headlines:
                 # creates an embed with the top 5 headlines
@@ -128,7 +129,7 @@ class newsCog(commands.Cog):
         # if the source is Gnews API, it gets the news from Gnews API
         else:
             # calls the function to get the news
-            headlines = getHeadlinesGnews()
+            headlines = await getHeadlinesGnews()
             # if the news is empty, it sends an error message, otherwise it sends the news
             if headlines[0] == True:
                 # creates an embed with the top 5 headlines
@@ -168,11 +169,11 @@ class newsCog(commands.Cog):
         """
         bot = self.bot
         # calls the function to get the coordinates of the city
-        coords = getCoords(city)
+        coords = asyncio.run(getCoords(city))
         # if the coordinates are empty, it sends an error message, otherwise it runs the weather function
         if coords[0] == True:
             # calls the function to get the weather
-            weather = getWeather(coords[1], coords[2])
+            weather = asyncio.run(getWeather(coords[1], coords[2]))
             # if the weather is empty, it sends an error message, otherwise it sends the weather
             if weather[0] == True:
                 # creates an embed with the weather

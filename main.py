@@ -9,7 +9,7 @@ import json
 #Loads the config file
 def getConfig():
     with open('config.json', 'r') as f:
-        data = json.load(f)
+        data = json.loads(f.read())
     # grabs all the config data
     owner = data["owner"]
     dev = data["dev"]

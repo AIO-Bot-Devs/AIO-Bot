@@ -36,7 +36,8 @@
             "active": true
         },
         "reminders": {
-            "active": true
+            "active": true,
+            "birthday_hour": 12
         },
         "news": {
             "active": true

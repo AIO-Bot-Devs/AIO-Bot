@@ -1,7 +1,8 @@
 import disnake
-from disnake.ext import commands
+from disnake.ext import commands, tasks
 import datetime
 import json
+import random
 
 # allows the cog to be loaded
 def setup(bot):
@@ -9,7 +10,7 @@ def setup(bot):
 
 # function to edit reminders
 def editReminders(reminders, birthdays):
-    with open('../data.json', 'r') as f:
+    with open('data.json', 'r') as f:
         data = json.load(f)
     # changes the reminders and birthdays and dumps the data back into the file
     data["reminders"]["reminders"] = reminders
@@ -20,7 +21,7 @@ def editReminders(reminders, birthdays):
 # function to grab reminders
 def checkReminders():
     # grabs the reminders and birthdays from the data file
-    with open('../data.json', 'r') as f:
+    with open('data.json', 'r') as f:
         data = json.load(f)
         reminders = data["reminders"]["reminders"]
         birthdays = data["reminders"]["birthdays"]
@@ -28,19 +29,72 @@ def checkReminders():
 
 # function to get the next birthday
 def getNextBirthday(birthdate):
-    # dunno how this works
+    # adds a year to the birthdate until it is in the future
     now = datetime.datetime.now(datetime.timezone.utc)
-    now = int(now.replace(tzinfo=datetime.timezone.utc).timestamp())
-    nextBirthday = birthdate
+    nextBirthday = datetime.datetime.fromtimestamp(birthdate).replace(tzinfo=datetime.timezone.utc)
     while nextBirthday < now:
-        nextBirthday = nextBirthday + 31557600 
-    return nextBirthday
+        nextBirthday = nextBirthday + datetime.timedelta(days=365)
+    return int(nextBirthday.timestamp())
 
 # class for all the reminders commands
 class remindersCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self._last_member = None
+        # adds the task when the cog is loaded
+        self.birthdayCheck.start()
+
+    # cancels the task if the cog is unloaded
+    def cog_unload(self):
+        self.birthdayCheck.cancel()
+
+    # a task which runs every day at 12:00 UTC to check birthdays
+    @tasks.loop(time=datetime.time(hour=12, tzinfo=datetime.timezone.utc))
+    async def birthdayCheck(self):        
+        print("Running birthday check...")
+        print(f"Time: {datetime.datetime.now(datetime.timezone.utc)}")
+        bot = self.bot
+        # get birthdays dictionary
+        reminders = checkReminders()
+        birthdays = reminders[1]
+        # loops over every server and user in the birthdays dictionary
+        for server in birthdays["servers"]:
+            for user in birthdays["servers"][server]["users"]:
+                date = int(birthdays["servers"][server]["users"][user])
+                user = await bot.fetch_user(int(user))
+                # if the date is in the past, send a birthday message
+                if date <= datetime.datetime.now(datetime.timezone.utc).timestamp():
+                    birthdayEmbed = disnake.Embed(
+                        title=f":tada: Happy Birthday {user.name}!",
+                        description=f"It's <t:{date}:D>, so everyone wish {user.mention} a happy birthday! The dev team says have a great day!",
+                        color=bot.colour_success
+                    )
+                    owner = await self.bot.fetch_user(self.bot.owner_id)
+                    birthdayEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
+                    birthdayEmbed.set_thumbnail(url="https://evilpanda.me/files/birthday.png")
+                    # send the message to the birthday channel from the data file 
+                    # getting the guild separately ensures the channel is in the same server
+                    guild = await bot.fetch_guild(int(server))
+                    channel = await bot.fetch_channel(int(birthdays["servers"][server]["channel"]))
+                    msg = await channel.send(embed=birthdayEmbed)
+                    # adds four birthday emojis as reactions in a random order
+                    emoji_list = ['🎉', '🎂', '🎁', '🎈']
+                    random.shuffle(emoji_list)
+                    await msg.add_reaction(emoji_list[0])
+                    await msg.add_reaction(emoji_list[1])
+                    await msg.add_reaction(emoji_list[2])
+                    await msg.add_reaction(emoji_list[3])
+                    # updates the birthday in the data file
+                    date = getNextBirthday(date)
+                    birthdays["servers"][server]["users"][str(user.id)] = date
+                    editReminders(reminders[0], birthdays)
+        print("Birthday checks completed (hopefully)")
+
+    # waits for the bot to be ready before running the task, in case of bot starting at around 12:00 UTC
+    @birthdayCheck.before_loop
+    async def botReadyCheck(self):
+        print('Waiting for bot to be ready...')
+        await self.bot.wait_until_ready()
 
     # default command
     @commands.slash_command()
