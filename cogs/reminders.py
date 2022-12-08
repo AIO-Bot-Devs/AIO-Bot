@@ -116,52 +116,53 @@ class remindersCog(commands.Cog):
         """
         bot = self.bot
         # try if the date is valid
-        # get the current reminders
-        reminders = checkReminders()
-        # if the birthday function is enabled then add the birthday to the list of birthdays
-        if str(inter.guild.id) in reminders[1]["servers"]:
-            # format the date and set the users birthday to the timestamp
-            date = date.split('/')
-            date = datetime.datetime(int(date[2]), int(date[1]), int(date[0]), hour=12)
-            timestamp = int(date.replace(tzinfo=datetime.timezone.utc).timestamp())
-            reminders[1]["servers"][str(inter.guild.id)]["users"][str(inter.user.id)] = timestamp
-            editReminders(reminders[0], reminders[1])
-            # sets the birthday channel to the one mentioned in data.json
-            birthdayChannel = bot.get_channel(reminders[1]["servers"][str(inter.guild.id)]["channel"])
-            # creates an embed with the users birthday
-            successEmbed = disnake.Embed(
-        title=f"Birthday added",
-        description=f"Your birth date has been set as <t:{timestamp}:D>. We will remind everyone <t:{getNextBirthday(timestamp)}:R> in {birthdayChannel.mention}.",
-        color=self.bot.colour_success)
-            # adds a footer to the embed
-            owner = await self.bot.fetch_user(self.bot.owner_id)
-            successEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
-            successEmbed.set_thumbnail(url="https://evilpanda.me/files/notify.png")
-            await inter.response.send_message(embed=successEmbed)
-        # if the birthday function is disabled then send an error message
-        else:
+        try:
+            # get the current reminders
+            reminders = checkReminders()
+            # if the birthday function is enabled then add the birthday to the list of birthdays
+            if str(inter.guild.id) in reminders[1]["servers"]:
+                # format the date and set the users birthday to the timestamp
+                date = date.split('/')
+                date = datetime.datetime(int(date[2]), int(date[1]), int(date[0]), hour=12)
+                timestamp = int(date.replace(tzinfo=datetime.timezone.utc).timestamp())
+                reminders[1]["servers"][str(inter.guild.id)]["users"][str(inter.user.id)] = timestamp
+                editReminders(reminders[0], reminders[1])
+                # sets the birthday channel to the one mentioned in data.json
+                birthdayChannel = bot.get_channel(reminders[1]["servers"][str(inter.guild.id)]["channel"])
+                # creates an embed with the users birthday
+                successEmbed = disnake.Embed(
+            title=f"Birthday added",
+            description=f"Your birth date has been set as <t:{timestamp}:D>. We will remind everyone <t:{getNextBirthday(timestamp)}:R> in {birthdayChannel.mention}.",
+            color=self.bot.colour_success)
+                # adds a footer to the embed
+                owner = await self.bot.fetch_user(self.bot.owner_id)
+                successEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
+                successEmbed.set_thumbnail(url="https://evilpanda.me/files/notify.png")
+                await inter.response.send_message(embed=successEmbed)
+            # if the birthday function is disabled then send an error message
+            else:
+                # creates an embed with the error message
+                errorEmbed = disnake.Embed(
+            title=f"Birthday function not enabled",
+            description=f"Please ask the server owner to set this up, using `/setup` or `/birthdaychannel`.",
+            color=self.bot.colour_error)
+                # adds a footer to the embed
+                owner = await self.bot.fetch_user(self.bot.owner_id)
+                errorEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
+                errorEmbed.set_thumbnail(url="https://evilpanda.me/files/error1.png")
+                await inter.response.send_message(embed=errorEmbed)
+        # if the date is invalid then send an error message
+        except (ValueError, IndexError):
             # creates an embed with the error message
             errorEmbed = disnake.Embed(
-        title=f"Birthday function not enabled",
-        description=f"Please ask the server owner to set this up, using `/setup` or `/birthdaychannel`.",
+        title=f"Invalid birthday date",
+        description=f"Please enter a valid date.\n\nUse the format: ``/birthday set DD/MM/YYYY``",
         color=self.bot.colour_error)
             # adds a footer to the embed
             owner = await self.bot.fetch_user(self.bot.owner_id)
             errorEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
             errorEmbed.set_thumbnail(url="https://evilpanda.me/files/error1.png")
             await inter.response.send_message(embed=errorEmbed)
-        # if the date is invalid then send an error message
-        # except:
-        #     # creates an embed with the error message
-        #     errorEmbed = disnake.Embed(
-        # title=f"Invalid birthday date",
-        # description=f"Please enter a valid date.\n\nUse the format: ``/birthday set DD/MM/YYYY``",
-        # color=self.bot.colour_error)
-        #     # adds a footer to the embed
-        #     owner = await self.bot.fetch_user(self.bot.owner_id)
-        #     errorEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
-        #     errorEmbed.set_thumbnail(url="https://evilpanda.me/files/error1.png")
-        #     await inter.response.send_message(embed=errorEmbed)
 
     # this subcommand will remove a birthday from the list of birthdays
     # set name in decorator to avoid two functions with same name
