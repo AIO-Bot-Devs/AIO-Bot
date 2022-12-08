@@ -37,7 +37,7 @@ class starboardCog(commands.Cog):
             # grabs the starboard channel
             starboard = bot.get_channel(servers[str(payload.guild_id)])
             # grabs the message that was reacted to
-            message = await bot.get_channel(payload.channel_id).fetch_message(payload.message_id)
+            message = bot.get_channel(payload.channel_id).fetch_message(payload.message_id)
             # grab the reaction that was added
             reactions = message.reactions
             for reaction in reactions:

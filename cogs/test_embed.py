@@ -51,7 +51,7 @@ class TestEmbed(commands.Cog):
     #    # whats payload??
     #    if payload.member != guild.me:
     #        # create the new embed with the updated colour
-    #        message = await bot.get_channel(payload.channel_id).fetch_message(
+    #        message = bot.get_channel(payload.channel_id).fetch_message(
     #            payload.message_id
     #        )
     #        embed = message.embeds[0]
@@ -68,7 +68,7 @@ class TestEmbed(commands.Cog):
 #    # whats payload??
 #    if payload.member != guild.me:
 #        # create the new embed with the updated colour
-#        message = await bot.get_channel(payload.channel_id).fetch_message(
+#        message = bot.get_channel(payload.channel_id).fetch_message(
 #            payload.message_id
 #        )
 #        embed = message.embeds[0]

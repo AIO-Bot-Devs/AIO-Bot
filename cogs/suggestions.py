@@ -37,7 +37,7 @@ class suggestionsCog(commands.Cog):
         return embed
 
     async def reaction_check(self, bot, payload):
-        message = await bot.get_channel(payload.channel_id).fetch_message(payload.message_id)
+        message = bot.get_channel(payload.channel_id).fetch_message(payload.message_id)
         reactions = message.reactions
         oldEmbed = message.embeds[0]
         # added the info for the embed to variables
