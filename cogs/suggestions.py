@@ -82,8 +82,8 @@ class suggestionsCog(commands.Cog):
         channels = checkChannels()
         bot = self.bot
         guild = bot.get_guild(payload.guild_id)
-        # whats payload??
-        if payload.channel_id in channels and payload.member != guild.me:
+        message = await bot.get_channel(payload.channel_id).fetch_message(payload.message_id)
+        if payload.channel_id in channels and payload.member != guild.me and not message.author.bot:
             # create the new embed with the updated colour
             message, newEmbed = await self.reaction_check(bot, payload)
             await message.edit(embed=newEmbed)
@@ -95,7 +95,8 @@ class suggestionsCog(commands.Cog):
     async def on_raw_reaction_remove(self, payload):
         channels = checkChannels()
         bot = self.bot
-        if payload.channel_id in channels:
+        message = await bot.get_channel(payload.channel_id).fetch_message(payload.message_id)
+        if payload.channel_id in channels and not message.author.bot:
             # create the new embed with the updated colour
             message, newEmbed = await self.reaction_check(bot, payload)
             await message.edit(embed=newEmbed)
