@@ -83,7 +83,7 @@ class suggestionsCog(commands.Cog):
         bot = self.bot
         guild = bot.get_guild(payload.guild_id)
         message = await bot.get_channel(payload.channel_id).fetch_message(payload.message_id)
-        if payload.channel_id in channels and payload.member != guild.me and not message.author.bot:
+        if payload.channel_id in channels and payload.member != guild.me and message.author == bot.user:
             # create the new embed with the updated colour
             message, newEmbed = await self.reaction_check(bot, payload)
             await message.edit(embed=newEmbed)
@@ -96,7 +96,7 @@ class suggestionsCog(commands.Cog):
         channels = checkChannels()
         bot = self.bot
         message = await bot.get_channel(payload.channel_id).fetch_message(payload.message_id)
-        if payload.channel_id in channels and not message.author.bot:
+        if payload.channel_id in channels and message.author == bot.user:
             # create the new embed with the updated colour
             message, newEmbed = await self.reaction_check(bot, payload)
             await message.edit(embed=newEmbed)
