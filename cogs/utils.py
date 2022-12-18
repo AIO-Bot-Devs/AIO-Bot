@@ -6,6 +6,9 @@ from bs4 import BeautifulSoup
 import urllib.parse
 import asyncio
 import json
+import os
+from dotenv import load_dotenv
+
 
 # allows the cog to be loaded
 def setup(bot):
@@ -101,7 +104,9 @@ class utilsCog(commands.Cog):
         # send the passed url to the screenshot api
         parsedUrl = urllib.parse.quote_plus(url)
         height, width = getDimensions()
-        screenshot_api = f"https://shot.screenshotapi.net/screenshot?token=N72DF2K-5ZZ4WCR-JJPEHAX-2E1T31G&url={parsedUrl}&width={width}&height={height}&output=image&file_type=png&wait_for_event=load"
+        load_dotenv()
+        api_key = os.getenv('SCREENSHOT_API_KEY')
+        screenshot_api = f"https://shot.screenshotapi.net/screenshot?token={api_key}&url={parsedUrl}&width={width}&height={height}&output=image&file_type=png&wait_for_event=load"
         screenshot = requests.get(screenshot_api)
         # open the screenshot file and writes the screenshot to it
         with open("screenshot.png", "wb") as f:
