@@ -1,10 +1,13 @@
 {
     "owner": 554343055029698571,
-    "dev": true,
-    "test_guilds": [777652457059647498, 1002963156273999884],
+    "dev": false,
+    "test_guilds": [
+        777652457059647498,
+        1002963156273999884
+    ],
     "prefix": "-",
-    "status": "Online",
-    "activity": "with code :)",
+    "status": "dnd",
+    "activity": "hi",
     "uptime_channel": 1016416185660743710,
     "footer": "AIO Bot • https://discord.gg/Zu6pDEBCjY",
     "colours": {

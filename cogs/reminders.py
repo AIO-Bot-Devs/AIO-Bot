@@ -235,8 +235,8 @@ class remindersCog(commands.Cog):
         ----------
         channel: The channel to set
         """
+        bot = self.bot
         if inter.user.guild_permissions.administrator:
-            bot = self.bot
             # get the current reminders
             reminders = checkReminders()
             # changes channel.id and list of users 
@@ -274,8 +274,8 @@ class remindersCog(commands.Cog):
         """
         Remove the birthday channel
         """
+        bot = self.bot
         if inter.user.guild_permissions.administrator:
-            bot = self.bot
             # get the current reminders
             reminders = checkReminders()
             # checks if server in reminders
