@@ -23,6 +23,8 @@ class NewEmbed(Embed):
         footer=default_footer,
         icon="https://cdn.discordapp.com/avatars/123456789012345678/123456789012345678.png",
         field_list=None,
+        suggestion=False,
+        rating=0,
     ):
         super().__init__(
             title=title, type=embed_type, description=description, color=color
@@ -30,9 +32,13 @@ class NewEmbed(Embed):
         self.set_author(name=author, icon_url=icon)
         self.set_footer(text=footer)
         self.field_list = field_list
+        self.suggestion = suggestion
+        self.rating = rating
         if field_list is not None:
             for field in self.field_list:
                 self.add_field(name=field[0], value=field[1], inline=False)
+        if suggestion:
+            self.add_field(name="Rating", value=rating, inline=False)
 
     def set_color(self, color):
         """This method sets the color of the embed."""

@@ -24,7 +24,7 @@ class TestEmbed(commands.Cog):
     @commands.slash_command()
     async def embed(self, inter):
         """This command creates an embed using the New_Embed class from embeds.py"""
-        embed = NewEmbed("test", description="this is a test")
+        embed = NewEmbed("test", description="this is a test", suggestion=True)
         up_button = Button(label="up", style=disnake.ButtonStyle.green)
         down_button = Button(label="down", style=disnake.ButtonStyle.red)
         await inter.response.send_message(
@@ -41,7 +41,11 @@ class TestEmbed(commands.Cog):
         elif inter.component.label == "down":
             rating = await add_suggestion(inter.message.id, -1)
         embed = NewEmbed(
-            "test", description="this is a test", field_list=[("test", "down")]
+            "test",
+            description="this is a test",
+            field_list=[("test", "down")],
+            suggestion=True,
+            rating=rating,
         )
         if rating > 0:
             color = self.bot.colour_success
