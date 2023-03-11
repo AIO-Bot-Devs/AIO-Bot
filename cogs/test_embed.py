@@ -1,5 +1,4 @@
 """This file is used to test the embeds.py file. It is not intended to be used in production."""
-import os.path
 
 import disnake
 from disnake.ext import commands
@@ -24,7 +23,7 @@ class TestEmbed(commands.Cog):
     @commands.slash_command()
     async def embed(self, inter):
         """This command creates an embed using the New_Embed class from embeds.py"""
-        embed = NewEmbed("test", description="this is a test", suggestion=True)
+        embed = NewEmbed("test", description="this is a test", footer="0")
         up_button = Button(label="up", style=disnake.ButtonStyle.green)
         down_button = Button(label="down", style=disnake.ButtonStyle.red)
         await inter.response.send_message(
@@ -43,9 +42,7 @@ class TestEmbed(commands.Cog):
         embed = NewEmbed(
             "test",
             description="this is a test",
-            field_list=[("test", "down")],
-            suggestion=True,
-            rating=rating,
+            footer=str(rating),
         )
         if rating > 0:
             color = self.bot.colour_success
