@@ -88,5 +88,5 @@ class qrcodesCog(commands.Cog):
         #     color=self.bot.colour_error)
         #     owner = await self.bot.fetch_user(self.bot.owner_id)
         #     errorEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
-        #     errorEmbed.set_thumbnail(url="https://evilpanda.me/files/error1.png")
+        #     errorEmbed.set_thumbnail(url="https://evilpanda.live/files/error1.png")
         #     await inter.response.send_message(embed=errorEmbed)

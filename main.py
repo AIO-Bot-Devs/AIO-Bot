@@ -147,7 +147,7 @@ async def status(inter, status: bot.status_enum):
 # color=bot.colour_success)
 #     owner = await bot.fetch_user(bot.owner_id)
 #     setupEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
-#     setupEmbed.set_thumbnail(url="https://evilpanda.me/files/idk.png")
+#     setupEmbed.set_thumbnail(url="https://evilpanda.live/files/idk.png")
 #     await inter.response.send_message(embed=setupEmbed)
 
 
