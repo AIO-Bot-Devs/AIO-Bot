@@ -136,19 +136,6 @@ async def status(inter, status: bot.status_enum):
 
 
 
-    
-
-#Make this at some point lol
-# @bot.slash_command()
-# async def setup(inter):
-#     setupEmbed = disnake.Embed(
-# title=f"Begin Setup",
-# description=f"",
-# color=bot.colour_success)
-#     setupEmbed.set_footer(text=self.bot.footer, icon_url=self.bot.user.avatar)
-#     setupEmbed.set_thumbnail(url="https://api.evilpanda.live/static/change_me.png")
-#     await inter.response.send_message(embed=setupEmbed)
-
 
 #Runs the bot using token from .env file
 load_dotenv()
