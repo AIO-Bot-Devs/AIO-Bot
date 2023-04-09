@@ -111,6 +111,8 @@ class suggestionsCog(commands.Cog):
     @suggestionschannel.sub_command()
     async def set(self, inter, channel: disnake.TextChannel):
         """
+        Set a suggestion channel
+        
         Parameters
         ----------
         channel: The channel to add

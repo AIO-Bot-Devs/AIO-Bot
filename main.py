@@ -76,6 +76,9 @@ bot.footer = config[7]
 bot.status_enum = commands.option_enum({"Online": disnake.Status.online.value, "Idle": disnake.Status.idle.value, "Do Not Disturb": disnake.Status.dnd.value, "Invisible": disnake.Status.invisible.value})
 bot.status_dict = {"online": disnake.Status.online, "idle": disnake.Status.idle, "dnd": disnake.Status.dnd, "invisible": disnake.Status.invisible}
 
+bot.permissions_int = 515433154624  # seems to be reasonable permissions
+
+
 #Adds cogs to the main bot (if they are enabled in config.json)
 cogs = config[10]
 

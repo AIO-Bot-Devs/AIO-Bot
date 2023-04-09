@@ -8,6 +8,7 @@ import asyncio
 import json
 import os
 from dotenv import load_dotenv
+from cogs.qrcodes import generateQr
 
 
 # allows the cog to be loaded
@@ -32,6 +33,8 @@ class utilsCog(commands.Cog):
     @commands.slash_command()
     async def avatar(self, inter, user: disnake.User):
         """
+        Get a user's avatar
+        
         Parameters
         ----------
         user: The user to get it from
@@ -48,27 +51,20 @@ class utilsCog(commands.Cog):
         avatarEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
         await inter.response.send_message(embed=avatarEmbed)
 
-    # test command to edit a message
+    # command to get bot's ping
     @commands.slash_command()
-    async def edit(inter):
-        await inter.response.send_message("Test message 1")
-        sleep(1)
-        await inter.edit_original_message(content="Test message 2")
-
-    # command to ping a user
-    @commands.slash_command()
-    async def ping(inter, user: disnake.User):
+    async def ping(self, inter):
         """
-        Parameters
-        ----------
-        user: The user to ping
+        Check ping of bot
         """
-        await inter.response.send_message("Pong! {}".format(user.mention))
+        await inter.response.send_message(f"Pong! Latency: {int(self.bot.latency * 1000)}ms")
 
     # command to render a webpage
     @commands.slash_command()
     async def webpage(self, inter, url: str):
         """
+        Generates preview of website
+        
         Parameters
         ----------
         url: The url of the webpage
@@ -123,4 +119,25 @@ class utilsCog(commands.Cog):
         webpageEmbed.set_image(file=image)
         await inter.edit_original_message(embed=webpageEmbed)
 
+    # command to get the invite link and QR code for the bot
+    @commands.slash_command()
+    async def invite(self, inter):
+        """
+        Generates invite link for bot
+        """
+        bot = self.bot
+        # create the invite
+        link = f"https://discord.com/api/oauth2/authorize?client_id={str(self.bot.application_id)}&permissions={str(bot.permissions_int)}&scope=bot%20applications.commands"
+        qr_filename = generateQr(link)
+        qrcode_file = disnake.File(qr_filename)
+        # create the embed
+        inviteEmbed = disnake.Embed(
+            title="Invite me to your server!",
+            description=f"[[Invite link]]({link})",
+            color=self.bot.colour_success)
+        # set the embed footer
+        owner = await self.bot.fetch_user(self.bot.owner_id)
+        inviteEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
+        inviteEmbed.set_image(file=qrcode_file)
+        await inter.response.send_message(embed=inviteEmbed)
 
