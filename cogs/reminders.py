@@ -70,8 +70,7 @@ class remindersCog(commands.Cog):
                         description=f"It's <t:{date}:D>, so everyone wish {user.mention} a happy birthday! The dev team says have a great day!",
                         color=bot.colour_success
                     )
-                    owner = await self.bot.fetch_user(self.bot.owner_id)
-                    birthdayEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
+                    birthdayEmbed.set_footer(text=self.bot.footer, icon_url=self.bot.user.avatar)
                     birthdayEmbed.set_thumbnail(url="https://api.evilpanda.live/static/birthday.png")
                     # send the message to the birthday channel from the data file 
                     # getting the guild separately ensures the channel is in the same server
@@ -135,8 +134,7 @@ class remindersCog(commands.Cog):
             description=f"Your birth date has been set as <t:{timestamp}:D>. We will remind everyone <t:{getNextBirthday(timestamp)}:R> in {birthdayChannel.mention}.",
             color=self.bot.colour_success)
                 # adds a footer to the embed
-                owner = await self.bot.fetch_user(self.bot.owner_id)
-                successEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
+                successEmbed.set_footer(text=self.bot.footer, icon_url=self.bot.user.avatar)
                 successEmbed.set_thumbnail(url="https://api.evilpanda.live/static/notify.png")
                 await inter.response.send_message(embed=successEmbed)
             # if the birthday function is disabled then send an error message
@@ -147,8 +145,7 @@ class remindersCog(commands.Cog):
             description=f"Please ask the server owner to set this up, using `/setup` or `/birthdaychannel`.",
             color=self.bot.colour_error)
                 # adds a footer to the embed
-                owner = await self.bot.fetch_user(self.bot.owner_id)
-                errorEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
+                errorEmbed.set_footer(text=self.bot.footer, icon_url=self.bot.user.avatar)
                 errorEmbed.set_thumbnail(url="https://api.evilpanda.live/static/error1.png")
                 await inter.response.send_message(embed=errorEmbed)
         # if the date is invalid then send an error message
@@ -159,8 +156,7 @@ class remindersCog(commands.Cog):
         description=f"Please enter a valid date.\n\nUse the format: ``/birthday set DD/MM/YYYY``",
         color=self.bot.colour_error)
             # adds a footer to the embed
-            owner = await self.bot.fetch_user(self.bot.owner_id)
-            errorEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
+            errorEmbed.set_footer(text=self.bot.footer, icon_url=self.bot.user.avatar)
             errorEmbed.set_thumbnail(url="https://api.evilpanda.live/static/error1.png")
             await inter.response.send_message(embed=errorEmbed)
 
@@ -190,8 +186,7 @@ class remindersCog(commands.Cog):
             description=f"Your birth date has been removed.",
             color=self.bot.colour_success)
                 # adds a footer to the embed
-                owner = await self.bot.fetch_user(self.bot.owner_id)
-                successEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
+                successEmbed.set_footer(text=self.bot.footer, icon_url=self.bot.user.avatar)
                 successEmbed.set_thumbnail(url="https://api.evilpanda.live/static/bin.png")
                 await inter.response.send_message(embed=successEmbed)
             # if the user doesn't have a birthday then send an error message
@@ -202,8 +197,7 @@ class remindersCog(commands.Cog):
             description=f"You don't have a birthday set.",
             color=self.bot.colour_error)
                 # adds a footer to the embed
-                owner = await self.bot.fetch_user(self.bot.owner_id)
-                errorEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
+                errorEmbed.set_footer(text=self.bot.footer, icon_url=self.bot.user.avatar)
                 errorEmbed.set_thumbnail(url="https://api.evilpanda.live/static/error1.png")
                 await inter.response.send_message(embed=errorEmbed)
         # if the birthday function is disabled then send an error message
@@ -214,8 +208,7 @@ class remindersCog(commands.Cog):
         description=f"Please ask the server owner to set this up, using `/setup` or `/birthdaychannel`.",
         color=self.bot.colour_error)
             # adds a footer to the embed
-            owner = await self.bot.fetch_user(self.bot.owner_id)
-            errorEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
+            errorEmbed.set_footer(text=self.bot.footer, icon_url=self.bot.user.avatar)
             errorEmbed.set_thumbnail(url="https://api.evilpanda.live/static/error1.png")
             await inter.response.send_message(embed=errorEmbed)
 
@@ -251,8 +244,7 @@ class remindersCog(commands.Cog):
         description=f"Birthdays will now be announced in {channel.mention}.",
         color=self.bot.colour_success)
             # adds a footer to the embed
-            owner = await self.bot.fetch_user(self.bot.owner_id)
-            successEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
+            successEmbed.set_footer(text=self.bot.footer, icon_url=self.bot.user.avatar)
             successEmbed.set_thumbnail(url="https://api.evilpanda.live/static/success.png")
             await inter.response.send_message(embed=successEmbed)
         else:
@@ -261,8 +253,7 @@ class remindersCog(commands.Cog):
                 description=f"You don't have permission to use this command.",
                 color=self.bot.colour_error
             )
-            owner = await self.bot.fetch_user(self.bot.owner_id)
-            errorEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
+            errorEmbed.set_footer(text=self.bot.footer, icon_url=self.bot.user.avatar)
             errorEmbed.set_thumbnail(url="https://api.evilpanda.live/static/error1.png")
             await inter.response.send_message(embed=errorEmbed)
 
@@ -289,8 +280,7 @@ class remindersCog(commands.Cog):
             description=f"Birthdays will no longer be announced.",
             color=self.bot.colour_success)
                 # adds a footer to the embed
-                owner = await self.bot.fetch_user(self.bot.owner_id)
-                successEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
+                successEmbed.set_footer(text=self.bot.footer, icon_url=self.bot.user.avatar)
                 successEmbed.set_thumbnail(url="https://api.evilpanda.live/static/bin.png")
                 await inter.response.send_message(embed=successEmbed)
             # if the server isn't in the list of servers then send an error message
@@ -301,8 +291,7 @@ class remindersCog(commands.Cog):
             description=f"No birthday channel has been set.",
             color=self.bot.colour_error)
                 # adds a footer to the embed
-                owner = await self.bot.fetch_user(self.bot.owner_id)
-                errorEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
+                errorEmbed.set_footer(text=self.bot.footer, icon_url=self.bot.user.avatar)
                 errorEmbed.set_thumbnail(url="https://api.evilpanda.live/static/error1.png")
                 await inter.response.send_message(embed=errorEmbed)
         else:
@@ -311,7 +300,6 @@ class remindersCog(commands.Cog):
                 description=f"You don't have permission to use this command.",
                 color=self.bot.colour_error
             )
-            owner = await self.bot.fetch_user(self.bot.owner_id)
-            errorEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
+            errorEmbed.set_footer(text=self.bot.footer, icon_url=self.bot.user.avatar)
             errorEmbed.set_thumbnail(url="https://api.evilpanda.live/static/error1.png")
             await inter.response.send_message(embed=errorEmbed)

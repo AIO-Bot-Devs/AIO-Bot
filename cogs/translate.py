@@ -51,8 +51,7 @@ class translateCog(commands.Cog):
         #     title=f"Translation into {destination.capitalize()}",
         #     description=result.text,
         #     colour=self.bot.colour_success)
-        # owner = await self.bot.fetch_user(self.bot.owner_id)
-        # translateEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
+        # translateEmbed.set_footer(text=self.bot.footer, icon_url=self.bot.user.avatar)
         # await inter.response.send_message(embed=translateEmbed)
 
     

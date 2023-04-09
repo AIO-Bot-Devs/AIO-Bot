@@ -32,7 +32,7 @@ class suggestionsCog(commands.Cog):
                 color=color)
         embed.set_author(name=name, icon_url=icon)
         # set the embed footer
-        owner = await self.bot.fetch_user(self.bot.owner_id)
+        
         embed.set_footer(text="Panda Bot • EvilPanda#7288", icon_url=owner.avatar)
         return embed
 

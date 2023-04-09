@@ -51,8 +51,7 @@ class starboardCog(commands.Cog):
                     # set the embed author
                     starboardEmbed.set_author(name=f"{message.author}", icon_url=message.author.avatar)
                     # set the embed footer
-                    owner = await self.bot.fetch_user(self.bot.owner_id)
-                    starboardEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
+                    starboardEmbed.set_footer(text=self.bot.footer, icon_url=self.bot.user.avatar)
                     await starboard.send(content=f"⭐ {message.channel.mention}", embed=starboardEmbed)
 
     

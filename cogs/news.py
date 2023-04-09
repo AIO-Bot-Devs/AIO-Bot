@@ -111,8 +111,7 @@ class newsCog(commands.Cog):
                 newsEmbed.add_field(name=headlines[3]['headline'], value=f"{headlines[3]['summary']} [[read more]]({headlines[3]['url']})", inline=False)
                 newsEmbed.add_field(name=headlines[4]['headline'], value=f"{headlines[4]['summary']} [[read more]]({headlines[4]['url']})", inline=False)
                 # adds a footer
-                owner = await bot.fetch_user(self.bot.owner_id)
-                newsEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
+                newsEmbed.set_footer(text=self.bot.footer, icon_url=self.bot.user.avatar)
                 newsEmbed.set_thumbnail(url="https://api.evilpanda.live/static/news.png")
                 await inter.response.send_message(embed=newsEmbed)
             # if the news is empty, it sends an error message
@@ -122,8 +121,7 @@ class newsCog(commands.Cog):
                     description=f"It appears there is no news? Please report this.",
                     color=self.bot.colour_error)
                 # adds a footer
-                owner = await bot.fetch_user(self.bot.owner_id)
-                errorEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
+                errorEmbed.set_footer(text=self.bot.footer, icon_url=self.bot.user.avatar)
                 errorEmbed.set_thumbnail(url="https://api.evilpanda.live/static/error1.png")
                 await inter.response.send_message(embed=errorEmbed)
         # if the source is Gnews API, it gets the news from Gnews API
@@ -143,8 +141,7 @@ class newsCog(commands.Cog):
                 newsEmbed.add_field(name=headlines[1][3]['title'], value=f"{headlines[1][3]['description']} [[read more]]({headlines[1][3]['url']})", inline=False)
                 newsEmbed.add_field(name=headlines[1][4]['title'], value=f"{headlines[1][4]['description']} [[read more]]({headlines[1][4]['url']})", inline=False)
                 # adds a footer
-                owner = await bot.fetch_user(self.bot.owner_id)
-                newsEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
+                newsEmbed.set_footer(text=self.bot.footer, icon_url=self.bot.user.avatar)
                 newsEmbed.set_thumbnail(url="https://api.evilpanda.live/static/news.png")
                 await inter.response.send_message(embed=newsEmbed)
             # if the news is empty, it sends an error message
@@ -154,8 +151,7 @@ class newsCog(commands.Cog):
                     description=f"An error occured while fetching news from GNews API, please report this. Error code: {headlines[1]}",
                     color=self.bot.colour_error)
                 # adds a footer
-                owner = await bot.fetch_user(self.bot.owner_id)
-                errorEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
+                errorEmbed.set_footer(text=self.bot.footer, icon_url=self.bot.user.avatar)
                 errorEmbed.set_thumbnail(url="https://api.evilpanda.live/static/error1.png")
                 await inter.response.send_message(embed=errorEmbed)
 
@@ -185,8 +181,7 @@ class newsCog(commands.Cog):
                 weatherEmbed.add_field(name="Temperature", value=f"{weather[2]} °C")
                 weatherEmbed.add_field(name="Wind", value=f"{weather[3]} m/s")
                 # adds a footer
-                owner = await bot.fetch_user(self.bot.owner_id)
-                weatherEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
+                weatherEmbed.set_footer(text=self.bot.footer, icon_url=self.bot.user.avatar)
                 weatherEmbed.set_thumbnail(url=f"https://openweathermap.org/img/wn/{weather[4]}@2x.png")
                 await inter.response.send_message(embed=weatherEmbed)
             # if the weather is empty, it sends an error message
@@ -197,8 +192,7 @@ class newsCog(commands.Cog):
                 description=f"Request failed, please report this. Error code {weather[1]}",
                 color=self.bot.colour_error)
                 # adds a footer
-                owner = await bot.fetch_user(self.bot.owner_id)
-                errorEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
+                errorEmbed.set_footer(text=self.bot.footer, icon_url=self.bot.user.avatar)
                 errorEmbed.set_thumbnail(url="https://api.evilpanda.live/static/error1.png")
                 await inter.response.send_message(embed=errorEmbed)
         # if the coordinates are empty, it sends an error message
@@ -209,7 +203,6 @@ class newsCog(commands.Cog):
                 description=f"Could not find the city '{city}'. Please enter a valid city.",
                 color=self.bot.colour_error)
             # adds a footer
-            owner = await bot.fetch_user(self.bot.owner_id)
-            errorEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
+            errorEmbed.set_footer(text=self.bot.footer, icon_url=self.bot.user.avatar)
             errorEmbed.set_thumbnail(url="https://api.evilpanda.live/static/error1.png")
             await inter.response.send_message(embed=errorEmbed)

@@ -47,8 +47,7 @@ class utilsCog(commands.Cog):
         avatarEmbed.set_image(url=user.avatar)
         avatarEmbed.set_author(name=user)
         # set the embed footer
-        owner = await self.bot.fetch_user(self.bot.owner_id)
-        avatarEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
+        avatarEmbed.set_footer(text=self.bot.footer, icon_url=self.bot.user.avatar)
         await inter.response.send_message(embed=avatarEmbed)
 
     # command to get bot's ping
@@ -85,8 +84,7 @@ class utilsCog(commands.Cog):
                 description="Make sure this URL exists and is valid",
                 color=self.bot.colour_error)
             # set the embed footer
-            owner = await self.bot.fetch_user(self.bot.owner_id)
-            errorEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
+            errorEmbed.set_footer(text=self.bot.footer, icon_url=self.bot.user.avatar)
             errorEmbed.set_thumbnail(url="https://api.evilpanda.live/static/error1.png")
             await inter.edit_original_message(embed=errorEmbed)
             return
@@ -114,8 +112,7 @@ class utilsCog(commands.Cog):
             description=f"[[go to webpage]]({url})",
             color=self.bot.colour_success)
         # set the embed footer
-        owner = await self.bot.fetch_user(self.bot.owner_id)
-        webpageEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
+        webpageEmbed.set_footer(text=self.bot.footer, icon_url=self.bot.user.avatar)
         webpageEmbed.set_image(file=image)
         await inter.edit_original_message(embed=webpageEmbed)
 
@@ -135,8 +132,7 @@ class utilsCog(commands.Cog):
             description=f"[[Invite link]]({link})",
             color=self.bot.colour_success)
         # set the embed footer
-        owner = await self.bot.fetch_user(self.bot.owner_id)
-        inviteEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
+        inviteEmbed.set_footer(text=self.bot.footer, icon_url=self.bot.user.avatar)
         inviteEmbed.set_image(file=qrcode_file)
         await inter.response.send_message(embed=inviteEmbed)
 

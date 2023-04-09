@@ -83,8 +83,7 @@ class minecraftCog(commands.Cog):
             else:
                 userEmbed.add_field(name="NameMC Friends (0)", value="None", inline=False)
             # adds pfp and footer to the embed
-            owner = await self.bot.fetch_user(self.bot.owner_id)
-            userEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
+            userEmbed.set_footer(text=self.bot.footer, icon_url=self.bot.user.avatar)
             await inter.edit_original_message(embed=userEmbed)
         # if the user is not found, then send an error message
         elif response.status_code == 404:
@@ -92,8 +91,7 @@ class minecraftCog(commands.Cog):
                 title=f"User Not Found",
                 description=f"The user '{username}' does not exist.",
                 color=self.bot.colour_error)
-            owner = await self.bot.fetch_user(self.bot.owner_id)
-            errorEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
+            errorEmbed.set_footer(text=self.bot.footer, icon_url=self.bot.user.avatar)
             errorEmbed.set_thumbnail(url="https://api.evilpanda.live/static/error1.png")
             await inter.edit_original_message(embed=errorEmbed)
         # if the username is invalid, then send an error message
@@ -102,8 +100,7 @@ class minecraftCog(commands.Cog):
                 title=f"Invalid Username",
                 description=f"The username '{username}' is invalid.",
                 color=self.bot.colour_error)
-            owner = await self.bot.fetch_user(self.bot.owner_id)
-            errorEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
+            errorEmbed.set_footer(text=self.bot.footer, icon_url=self.bot.user.avatar)
             errorEmbed.set_thumbnail(url="https://api.evilpanda.live/static/error1.png")
             await inter.edit_original_message(embed=errorEmbed)
         # if any other error occurs, then send an error message
@@ -112,8 +109,7 @@ class minecraftCog(commands.Cog):
                 title=f"An Error Occured",
                 description=f"Error {response.status_code}. {response.error}",
                 color=self.bot.colour_error)
-            owner = await self.bot.fetch_user(self.bot.owner_id)
-            errorEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
+            errorEmbed.set_footer(text=self.bot.footer, icon_url=self.bot.user.avatar)
             errorEmbed.set_thumbnail(url="https://api.evilpanda.live/static/error1.png")
             await inter.edit_original_message(embed=errorEmbed)
     
@@ -179,8 +175,7 @@ class minecraftCog(commands.Cog):
                 # add banner to the embed
                 serverEmbed.set_image(url=img)
             # add footer to embed
-            owner = await self.bot.fetch_user(self.bot.owner_id)
-            serverEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
+            serverEmbed.set_footer(text=self.bot.footer, icon_url=self.bot.user.avatar)
             # edit the original message with the embed
             await inter.edit_original_message(embed=serverEmbed)
         # if the api returns an error, then send an error message
@@ -189,9 +184,8 @@ class minecraftCog(commands.Cog):
                 title=f"API Error",
                 description=f"Error {response.status_code} occured with server status api. Please report this",
                 color=self.bot.colour_error)
-            owner = await self.bot.fetch_user(self.bot.owner_id)
             # add footer to embed
-            errorEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
+            errorEmbed.set_footer(text=self.bot.footer, icon_url=self.bot.user.avatar)
             errorEmbed.set_thumbnail(url="https://api.evilpanda.live/static/error1.png")
             # edit the original message with the embed
             await inter.edit_original_message(embed=errorEmbed)

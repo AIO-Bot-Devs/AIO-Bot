@@ -78,15 +78,13 @@ class qrcodesCog(commands.Cog):
             color=self.bot.colour_success)
         qrcodeEmbed.set_image(file=image)
         # adds the footer
-        owner = await self.bot.fetch_user(self.bot.owner_id)
-        qrcodeEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
+        qrcodeEmbed.set_footer(text=self.bot.footer, icon_url=self.bot.user.avatar)
         await inter.response.send_message(embed=qrcodeEmbed)
         # except:
         #     errorEmbed = disnake.Embed(
         #     title=f"An Error Occurred",
         #     description=f"This is most likely due to the input data being too large. Try something smaller? (please?)",
         #     color=self.bot.colour_error)
-        #     owner = await self.bot.fetch_user(self.bot.owner_id)
-        #     errorEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
+        #     errorEmbed.set_footer(text=self.bot.footer, icon_url=self.bot.user.avatar)
         #     errorEmbed.set_thumbnail(url="https://api.evilpanda.live/static/error1.png")
         #     await inter.response.send_message(embed=errorEmbed)

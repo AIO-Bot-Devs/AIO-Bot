@@ -145,8 +145,7 @@ async def status(inter, status: bot.status_enum):
 # title=f"Begin Setup",
 # description=f"",
 # color=bot.colour_success)
-#     owner = await bot.fetch_user(bot.owner_id)
-#     setupEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
+#     setupEmbed.set_footer(text=self.bot.footer, icon_url=self.bot.user.avatar)
 #     setupEmbed.set_thumbnail(url="https://api.evilpanda.live/static/change_me.png")
 #     await inter.response.send_message(embed=setupEmbed)
 
