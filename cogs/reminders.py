@@ -72,7 +72,7 @@ class remindersCog(commands.Cog):
                     )
                     owner = await self.bot.fetch_user(self.bot.owner_id)
                     birthdayEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
-                    birthdayEmbed.set_thumbnail(url="https://evilpanda.live/files/birthday.png")
+                    birthdayEmbed.set_thumbnail(url="https://api.evilpanda.live/static/birthday.png")
                     # send the message to the birthday channel from the data file 
                     # getting the guild separately ensures the channel is in the same server
                     guild = await bot.fetch_guild(int(server))
@@ -137,7 +137,7 @@ class remindersCog(commands.Cog):
                 # adds a footer to the embed
                 owner = await self.bot.fetch_user(self.bot.owner_id)
                 successEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
-                successEmbed.set_thumbnail(url="https://evilpanda.live/files/notify.png")
+                successEmbed.set_thumbnail(url="https://api.evilpanda.live/static/notify.png")
                 await inter.response.send_message(embed=successEmbed)
             # if the birthday function is disabled then send an error message
             else:
@@ -149,7 +149,7 @@ class remindersCog(commands.Cog):
                 # adds a footer to the embed
                 owner = await self.bot.fetch_user(self.bot.owner_id)
                 errorEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
-                errorEmbed.set_thumbnail(url="https://evilpanda.live/files/error1.png")
+                errorEmbed.set_thumbnail(url="https://api.evilpanda.live/static/error1.png")
                 await inter.response.send_message(embed=errorEmbed)
         # if the date is invalid then send an error message
         except (ValueError, IndexError):
@@ -161,7 +161,7 @@ class remindersCog(commands.Cog):
             # adds a footer to the embed
             owner = await self.bot.fetch_user(self.bot.owner_id)
             errorEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
-            errorEmbed.set_thumbnail(url="https://evilpanda.live/files/error1.png")
+            errorEmbed.set_thumbnail(url="https://api.evilpanda.live/static/error1.png")
             await inter.response.send_message(embed=errorEmbed)
 
     # this subcommand will remove a birthday from the list of birthdays
@@ -192,7 +192,7 @@ class remindersCog(commands.Cog):
                 # adds a footer to the embed
                 owner = await self.bot.fetch_user(self.bot.owner_id)
                 successEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
-                successEmbed.set_thumbnail(url="https://evilpanda.live/files/bin.png")
+                successEmbed.set_thumbnail(url="https://api.evilpanda.live/static/bin.png")
                 await inter.response.send_message(embed=successEmbed)
             # if the user doesn't have a birthday then send an error message
             else:
@@ -204,7 +204,7 @@ class remindersCog(commands.Cog):
                 # adds a footer to the embed
                 owner = await self.bot.fetch_user(self.bot.owner_id)
                 errorEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
-                errorEmbed.set_thumbnail(url="https://evilpanda.live/files/error1.png")
+                errorEmbed.set_thumbnail(url="https://api.evilpanda.live/static/error1.png")
                 await inter.response.send_message(embed=errorEmbed)
         # if the birthday function is disabled then send an error message
         else:
@@ -216,7 +216,7 @@ class remindersCog(commands.Cog):
             # adds a footer to the embed
             owner = await self.bot.fetch_user(self.bot.owner_id)
             errorEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
-            errorEmbed.set_thumbnail(url="https://evilpanda.live/files/error1.png")
+            errorEmbed.set_thumbnail(url="https://api.evilpanda.live/static/error1.png")
             await inter.response.send_message(embed=errorEmbed)
 
     # this is the default command for changing the birthday channel
@@ -253,7 +253,7 @@ class remindersCog(commands.Cog):
             # adds a footer to the embed
             owner = await self.bot.fetch_user(self.bot.owner_id)
             successEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
-            successEmbed.set_thumbnail(url="https://evilpanda.live/files/success.png")
+            successEmbed.set_thumbnail(url="https://api.evilpanda.live/static/success.png")
             await inter.response.send_message(embed=successEmbed)
         else:
             errorEmbed = disnake.Embed(
@@ -263,7 +263,7 @@ class remindersCog(commands.Cog):
             )
             owner = await self.bot.fetch_user(self.bot.owner_id)
             errorEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
-            errorEmbed.set_thumbnail(url="https://evilpanda.live/files/error1.png")
+            errorEmbed.set_thumbnail(url="https://api.evilpanda.live/static/error1.png")
             await inter.response.send_message(embed=errorEmbed)
 
 
@@ -291,7 +291,7 @@ class remindersCog(commands.Cog):
                 # adds a footer to the embed
                 owner = await self.bot.fetch_user(self.bot.owner_id)
                 successEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
-                successEmbed.set_thumbnail(url="https://evilpanda.live/files/bin.png")
+                successEmbed.set_thumbnail(url="https://api.evilpanda.live/static/bin.png")
                 await inter.response.send_message(embed=successEmbed)
             # if the server isn't in the list of servers then send an error message
             else:
@@ -303,7 +303,7 @@ class remindersCog(commands.Cog):
                 # adds a footer to the embed
                 owner = await self.bot.fetch_user(self.bot.owner_id)
                 errorEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
-                errorEmbed.set_thumbnail(url="https://evilpanda.live/files/error1.png")
+                errorEmbed.set_thumbnail(url="https://api.evilpanda.live/static/error1.png")
                 await inter.response.send_message(embed=errorEmbed)
         else:
             errorEmbed = disnake.Embed(
@@ -313,5 +313,5 @@ class remindersCog(commands.Cog):
             )
             owner = await self.bot.fetch_user(self.bot.owner_id)
             errorEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
-            errorEmbed.set_thumbnail(url="https://evilpanda.live/files/error1.png")
+            errorEmbed.set_thumbnail(url="https://api.evilpanda.live/static/error1.png")
             await inter.response.send_message(embed=errorEmbed)

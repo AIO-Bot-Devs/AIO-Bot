@@ -113,7 +113,7 @@ class newsCog(commands.Cog):
                 # adds a footer
                 owner = await bot.fetch_user(self.bot.owner_id)
                 newsEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
-                newsEmbed.set_thumbnail(url="https://evilpanda.live/files/news.png")
+                newsEmbed.set_thumbnail(url="https://api.evilpanda.live/static/news.png")
                 await inter.response.send_message(embed=newsEmbed)
             # if the news is empty, it sends an error message
             else:
@@ -124,7 +124,7 @@ class newsCog(commands.Cog):
                 # adds a footer
                 owner = await bot.fetch_user(self.bot.owner_id)
                 errorEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
-                errorEmbed.set_thumbnail(url="https://evilpanda.live/files/error1.png")
+                errorEmbed.set_thumbnail(url="https://api.evilpanda.live/static/error1.png")
                 await inter.response.send_message(embed=errorEmbed)
         # if the source is Gnews API, it gets the news from Gnews API
         else:
@@ -145,7 +145,7 @@ class newsCog(commands.Cog):
                 # adds a footer
                 owner = await bot.fetch_user(self.bot.owner_id)
                 newsEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
-                newsEmbed.set_thumbnail(url="https://evilpanda.live/files/news.png")
+                newsEmbed.set_thumbnail(url="https://api.evilpanda.live/static/news.png")
                 await inter.response.send_message(embed=newsEmbed)
             # if the news is empty, it sends an error message
             else:
@@ -156,7 +156,7 @@ class newsCog(commands.Cog):
                 # adds a footer
                 owner = await bot.fetch_user(self.bot.owner_id)
                 errorEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
-                errorEmbed.set_thumbnail(url="https://evilpanda.live/files/error1.png")
+                errorEmbed.set_thumbnail(url="https://api.evilpanda.live/static/error1.png")
                 await inter.response.send_message(embed=errorEmbed)
 
     # command to get the weather
@@ -199,7 +199,7 @@ class newsCog(commands.Cog):
                 # adds a footer
                 owner = await bot.fetch_user(self.bot.owner_id)
                 errorEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
-                errorEmbed.set_thumbnail(url="https://evilpanda.live/files/error1.png")
+                errorEmbed.set_thumbnail(url="https://api.evilpanda.live/static/error1.png")
                 await inter.response.send_message(embed=errorEmbed)
         # if the coordinates are empty, it sends an error message
         else:
@@ -211,5 +211,5 @@ class newsCog(commands.Cog):
             # adds a footer
             owner = await bot.fetch_user(self.bot.owner_id)
             errorEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
-            errorEmbed.set_thumbnail(url="https://evilpanda.live/files/error1.png")
+            errorEmbed.set_thumbnail(url="https://api.evilpanda.live/static/error1.png")
             await inter.response.send_message(embed=errorEmbed)

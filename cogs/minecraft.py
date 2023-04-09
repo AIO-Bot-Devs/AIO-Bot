@@ -94,7 +94,7 @@ class minecraftCog(commands.Cog):
                 color=self.bot.colour_error)
             owner = await self.bot.fetch_user(self.bot.owner_id)
             errorEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
-            errorEmbed.set_thumbnail(url="https://evilpanda.live/files/error1.png")
+            errorEmbed.set_thumbnail(url="https://api.evilpanda.live/static/error1.png")
             await inter.edit_original_message(embed=errorEmbed)
         # if the username is invalid, then send an error message
         elif response.status_code == 400:
@@ -104,7 +104,7 @@ class minecraftCog(commands.Cog):
                 color=self.bot.colour_error)
             owner = await self.bot.fetch_user(self.bot.owner_id)
             errorEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
-            errorEmbed.set_thumbnail(url="https://evilpanda.live/files/error1.png")
+            errorEmbed.set_thumbnail(url="https://api.evilpanda.live/static/error1.png")
             await inter.edit_original_message(embed=errorEmbed)
         # if any other error occurs, then send an error message
         else:
@@ -114,7 +114,7 @@ class minecraftCog(commands.Cog):
                 color=self.bot.colour_error)
             owner = await self.bot.fetch_user(self.bot.owner_id)
             errorEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
-            errorEmbed.set_thumbnail(url="https://evilpanda.live/files/error1.png")
+            errorEmbed.set_thumbnail(url="https://api.evilpanda.live/static/error1.png")
             await inter.edit_original_message(embed=errorEmbed)
     
     # this subcommand will retrieve data about a server
@@ -192,7 +192,7 @@ class minecraftCog(commands.Cog):
             owner = await self.bot.fetch_user(self.bot.owner_id)
             # add footer to embed
             errorEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
-            errorEmbed.set_thumbnail(url="https://evilpanda.live/files/error1.png")
+            errorEmbed.set_thumbnail(url="https://api.evilpanda.live/static/error1.png")
             # edit the original message with the embed
             await inter.edit_original_message(embed=errorEmbed)
 

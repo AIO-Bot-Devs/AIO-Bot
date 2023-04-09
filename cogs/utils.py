@@ -74,7 +74,7 @@ class utilsCog(commands.Cog):
         await inter.response.defer(with_message=True)
         # if the url does not start with http/s, add it
         if not url.startswith("http://") and not url.startswith("https://"):
-            url = "http://" + url
+            url = "https://" + url
         # try to get the webpage, if it fails, send an error message
         try:
             r = requests.get(url)
@@ -87,7 +87,7 @@ class utilsCog(commands.Cog):
             # set the embed footer
             owner = await self.bot.fetch_user(self.bot.owner_id)
             errorEmbed.set_footer(text=bot.footer, icon_url=owner.avatar)
-            errorEmbed.set_thumbnail(url="https://evilpanda.live/files/error1.png")
+            errorEmbed.set_thumbnail(url="https://api.evilpanda.live/static/error1.png")
             await inter.edit_original_message(embed=errorEmbed)
             return
         # WTF IS SOUP LMAO
