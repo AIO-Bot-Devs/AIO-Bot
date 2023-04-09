@@ -128,8 +128,7 @@ class utilsCog(commands.Cog):
         bot = self.bot
         # create the invite
         link = f"https://discord.com/api/oauth2/authorize?client_id={str(self.bot.application_id)}&permissions={str(bot.permissions_int)}&scope=bot%20applications.commands"
-        qr_filename = generateQr(link)
-        qrcode_file = disnake.File(qr_filename)
+        qrcode_file = generateQr(link)
         # create the embed
         inviteEmbed = disnake.Embed(
             title="Invite me to your server!",

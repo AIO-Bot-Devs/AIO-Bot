@@ -19,6 +19,17 @@ def editIndex():
 
 # function to generate the QR code with the data
 def generateQr(data):
+    """
+    Generates a QR code from the data provided
+    
+    Parameters
+    ----------
+    data: The data to generate it with
+
+    Returns
+    -------
+    file: The QR code image as a disnake file object
+    """
     filename = f'qrcodes/qrcode.png'
     # creates the QR code object
     qr = qrmodule.QRCode(
