@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 import os
 import asyncio
+import datetime
 
 # loads tokens from .env file
 load_dotenv()
@@ -16,39 +17,36 @@ news_token = os.getenv('NEWS_API_KEY')
 def setup(bot):
     bot.add_cog(newsCog(bot))
 
-# grabs the news from gnews
-async def getHeadlinesGnews():
-    async with aiohttp.request('GET', f"https://gnews.io/api/v4/top-headlines?token={news_token}&lang=en") as response:
-        if response.status == 200:
-            data = await response.json()
-            articles = data['articles']
-            return True, articles
-        else:
-            return False, response.status
+# formats dates from rss feed to discord timestamps
+async def formatDate(dateInput):
+    datetimeObject = datetime.datetime.strptime(dateInput, "%a, %d %b %Y %H:%M:%S GMT")
+    timestamp = int(datetimeObject.timestamp())
+    return f"<t:{timestamp}:R>"
 
-# this just works 
-async def getHeadlinesBBC():
-    # Not my code lmao: https://jonathansoma.com/lede/foundations-2017/classes/adv-scraping/scraping-bbc/
-    async with aiohttp.request('GET', f"http://www.bbc.com/news") as response:
-        doc = BeautifulSoup(await response.text(), 'html.parser')
-    # Start with an empty list
-    stories_list = []
-    stories = doc.find_all('div', { 'class': 'gs-c-promo' })
-    for story in stories:
-        # Create a dictionary without anything in it
-        story_dict = {}
-        headline = story.find('h3')
-        link = story.find('a')
-        summary = story.find('p')
-        if headline and link and summary:
-            story_dict['headline'] = headline.text
-            story_dict['url'] = 'https://bbc.co.uk' + link['href']
-            story_dict['summary'] = summary.text
-            # Add the dict to our list
+
+# gets the news using bbc rss feed and beautiful soup parsing
+async def getHeadlinesBBCRSS():
+    # try except statement to catch any errors
+    try:
+        async with aiohttp.request('GET', f"http://feeds.bbci.co.uk/news/rss.xml") as response:
+            bs = BeautifulSoup(await response.text(), 'xml')
+        # find all stories in feed
+        stories = bs.find_all('item')
+        stories_list = []
+        # add a dictionary for each story to a list
+        for story in stories:
+            story_dict = {}
+            story_dict['headline'] = story.find('title').text
+            story_dict['summary'] = story.find('description').text
+            story_dict['url'] = story.find('guid').text
+            story_dict['date'] = story.find('pubDate').text
             stories_list.append(story_dict)
-    return stories_list
+        return stories_list
+    except:
+        return False
 
-# gets the coordinates of the location
+
+# gets the coordinates of the location, in order to use them for the weather api
 async def getCoords(city):
     # sends a request to the weather api
     async with aiohttp.request('GET', f"http://api.openweathermap.org/geo/1.0/direct?q={city}&appid={weather_token}") as response:
@@ -65,7 +63,7 @@ async def getCoords(city):
         else:
             return False, response.status
 
-# gets the weather data based on the coordinates
+# gets the weather data based on the coordinates of the city (limitation of api - no city name search)
 async def getWeather(lat, lon):
     # sends a request to the weather api with the coordinates
     async with aiohttp.request('GET', f"https://api.openweathermap.org/data/2.5/weather?lat={str(lat)}&lon={str(lon)}&units=metric&appid={weather_token}") as response:
@@ -87,78 +85,47 @@ class newsCog(commands.Cog):
 
     # this command gets the news
     @commands.slash_command()
-    async def headlines(self, inter, source = commands.Param(choices=["BBC", "GNews API"])):
+    async def headlines(self, inter):
         """
-        Parameters
-        ----------
-        source: BBC News (UK) or Gnews API (international)
+        Gets the headlines from BBC News
         """
         bot = self.bot
-        # if the source is BBC, it gets the news from BBC, otherwise it gets the news from Gnews
-        if source == "BBC":
-            # calls the function to get the news
-            headlines = await getHeadlinesBBC()
-            # if the news is empty, it sends an error message, otherwise it sends the news
-            if headlines:
-                # creates an embed with the top 5 headlines
-                newsEmbed = disnake.Embed(
-                        title=f"Headlines",
-                        description=f"Here are your news headlines, from BBC News!",
-                        color=self.bot.colour_success)
-                newsEmbed.add_field(name=headlines[0]['headline'], value=f"{headlines[0]['summary']} [[read more]]({headlines[0]['url']})", inline=False)
-                newsEmbed.add_field(name=headlines[1]['headline'], value=f"{headlines[1]['summary']} [[read more]]({headlines[1]['url']})", inline=False)
-                newsEmbed.add_field(name=headlines[2]['headline'], value=f"{headlines[2]['summary']} [[read more]]({headlines[2]['url']})", inline=False)
-                newsEmbed.add_field(name=headlines[3]['headline'], value=f"{headlines[3]['summary']} [[read more]]({headlines[3]['url']})", inline=False)
-                newsEmbed.add_field(name=headlines[4]['headline'], value=f"{headlines[4]['summary']} [[read more]]({headlines[4]['url']})", inline=False)
-                # adds a footer
-                newsEmbed.set_footer(text=self.bot.footer, icon_url=self.bot.user.avatar)
-                newsEmbed.set_thumbnail(url="https://api.evilpanda.live/static/news.png")
-                await inter.response.send_message(embed=newsEmbed)
-            # if the news is empty, it sends an error message
-            else:
-                errorEmbed = disnake.Embed(
-                    title=f"News Content Error",
-                    description=f"It appears there is no news? Please report this.",
-                    color=self.bot.colour_error)
-                # adds a footer
-                errorEmbed.set_footer(text=self.bot.footer, icon_url=self.bot.user.avatar)
-                errorEmbed.set_thumbnail(url="https://api.evilpanda.live/static/error1.png")
-                await inter.response.send_message(embed=errorEmbed)
-        # if the source is Gnews API, it gets the news from Gnews API
+        # calls the function to get the news
+        headlines = await getHeadlinesBBCRSS()
+        # if the news is empty, it sends an error message, otherwise it sends the news
+        if headlines:
+            # creates an embed with the top 5 headlines
+            newsEmbed = disnake.Embed(
+                    title=f"Headlines",
+                    description=f"Here are your news headlines, from BBC News!",
+                    color=self.bot.colour_success)
+            # add a field for each story
+            newsEmbed.add_field(name=f"{bot.emoji_bullet_point} {headlines[0]['headline']}", value=f"{await formatDate(headlines[0]['date'])}\n{headlines[0]['summary']}\n[[read more]]({headlines[0]['url']})", inline=False)
+            newsEmbed.add_field(name=f"{bot.emoji_bullet_point} {headlines[1]['headline']}", value=f"{await formatDate(headlines[1]['date'])}\n{headlines[1]['summary']}\n[[read more]]({headlines[1]['url']})", inline=False)
+            newsEmbed.add_field(name=f"{bot.emoji_bullet_point} {headlines[2]['headline']}", value=f"{await formatDate(headlines[2]['date'])}\n{headlines[2]['summary']}\n[[read more]]({headlines[2]['url']})", inline=False)
+            newsEmbed.add_field(name=f"{bot.emoji_bullet_point} {headlines[3]['headline']}", value=f"{await formatDate(headlines[3]['date'])}\n{headlines[3]['summary']}\n[[read more]]({headlines[3]['url']})", inline=False)
+            newsEmbed.add_field(name=f"{bot.emoji_bullet_point} {headlines[4]['headline']}", value=f"{await formatDate(headlines[4]['date'])}\n{headlines[4]['summary']}\n[[read more]]({headlines[4]['url']})", inline=False)
+            # adds a footer
+            newsEmbed.set_footer(text=self.bot.footer, icon_url=self.bot.user.avatar)
+            newsEmbed.set_thumbnail(url="https://api.evilpanda.live/static/news.png")
+            await inter.response.send_message(embed=newsEmbed)
+        # if an error occured while getting the news, it sends an error message
         else:
-            # calls the function to get the news
-            headlines = await getHeadlinesGnews()
-            # if the news is empty, it sends an error message, otherwise it sends the news
-            if headlines[0] == True:
-                # creates an embed with the top 5 headlines
-                newsEmbed = disnake.Embed(
-                        title=f"Headlines",
-                        description=f"Here are your international headlines, from GNews API!",
-                        color=self.bot.colour_success)
-                newsEmbed.add_field(name=headlines[1][0]['title'], value=f"{headlines[1][0]['description']} [[read more]]({headlines[1][0]['url']})", inline=False)
-                newsEmbed.add_field(name=headlines[1][1]['title'], value=f"{headlines[1][1]['description']} [[read more]]({headlines[1][1]['url']})", inline=False)
-                newsEmbed.add_field(name=headlines[1][2]['title'], value=f"{headlines[1][2]['description']} [[read more]]({headlines[1][2]['url']})", inline=False)
-                newsEmbed.add_field(name=headlines[1][3]['title'], value=f"{headlines[1][3]['description']} [[read more]]({headlines[1][3]['url']})", inline=False)
-                newsEmbed.add_field(name=headlines[1][4]['title'], value=f"{headlines[1][4]['description']} [[read more]]({headlines[1][4]['url']})", inline=False)
-                # adds a footer
-                newsEmbed.set_footer(text=self.bot.footer, icon_url=self.bot.user.avatar)
-                newsEmbed.set_thumbnail(url="https://api.evilpanda.live/static/news.png")
-                await inter.response.send_message(embed=newsEmbed)
-            # if the news is empty, it sends an error message
-            else:
-                errorEmbed = disnake.Embed(
-                    title=f"GNews API Error",
-                    description=f"An error occured while fetching news from GNews API, please report this. Error code: {headlines[1]}",
-                    color=self.bot.colour_error)
-                # adds a footer
-                errorEmbed.set_footer(text=self.bot.footer, icon_url=self.bot.user.avatar)
-                errorEmbed.set_thumbnail(url="https://api.evilpanda.live/static/error1.png")
-                await inter.response.send_message(embed=errorEmbed)
+            errorEmbed = disnake.Embed(
+                title=f"News Content Error",
+                description=f"It appears there is no news? Please report this.",
+                color=self.bot.colour_error)
+            # adds a footer
+            errorEmbed.set_footer(text=self.bot.footer, icon_url=self.bot.user.avatar)
+            errorEmbed.set_thumbnail(url="https://api.evilpanda.live/static/error1.png")
+            await inter.response.send_message(embed=errorEmbed)
 
     # command to get the weather
     @commands.slash_command()
     async def weather(self, inter, city):
         """
+        Gets the weather in a specified city
+        
         Parameters
         ----------
         city: The city to check
@@ -167,11 +134,11 @@ class newsCog(commands.Cog):
         # calls the function to get the coordinates of the city
         coords = asyncio.run(getCoords(city))
         # if the coordinates are empty, it sends an error message, otherwise it runs the weather function
-        if coords[0] == True:
+        if coords[0]:
             # calls the function to get the weather
             weather = asyncio.run(getWeather(coords[1], coords[2]))
             # if the weather is empty, it sends an error message, otherwise it sends the weather
-            if weather[0] == True:
+            if weather[0]:
                 # creates an embed with the weather
                 weatherEmbed = disnake.Embed(
                     title=f"Weather in {coords[3]}",
