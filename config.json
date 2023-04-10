@@ -1,16 +1,15 @@
 {
-    "owner": 554343055029698571,
     "dev": false,
     "test_guilds": [
         777652457059647498,
         1002963156273999884
     ],
     "prefix": "-",
-    "status": "dnd",
+    "status": "online",
     "activity": "hi",
     "uptime_channel": 1016416185660743710,
-    "footer": "AIO Dev • https://discord.gg/Zu6pDEBCjY",
-    "footer_image_user_id": 554343055029698571,
+    "footer": "AIO Dev \u2022 https://discord.gg/Zu6pDEBCjY",
+    "permissions_int": 515433154624,
     "colours": {
         "neutral": "0x03d7fc",
         "success": "0x00ff22",

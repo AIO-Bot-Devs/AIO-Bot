@@ -1,32 +1,24 @@
 #Imports all the required libraries
 import disnake
-from disnake.ext import commands
 import os
 from dotenv import load_dotenv
 import json
 import aiofiles
 
 
-#Loads the config file
-def getConfig():
-    with open('config.json', 'r') as f:
-        data = json.loads(f.read())
-    # grabs all the config data
-    owner = data["owner"]
-    dev = data["dev"]
-    test_guilds = data["test_guilds"]
-    prefix = data["prefix"]
-    status = data["status"]
-    activity = data["activity"]
-    uptime_channel = data["uptime_channel"]
-    footer = data["footer"]
-    colours = data["colours"]
-    emojis = data["emojis"]
-    # makes a dict of all the cogs and their status
-    cogs = {}
-    for i in data["cogs"]:
-        cogs[i] = data["cogs"][i]["active"]
-    return owner, dev, test_guilds, prefix, status, activity, uptime_channel, footer, colours, emojis, cogs
+
+
+class Config:
+    def __init__(self, filename: str = "config.json"):
+        self.filename = filename
+        self.config = None
+        with open(self.filename, "r") as f:
+            self.data = json.load(f)
+
+    async def reload():
+        async with aiofiles.open(self.filename, "r") as f:
+            self.config = json.load(await f.read())
+
 
 
 #Define intents for bot (make these more specific later so bot doesn't require unnecessary intents/permissions)
@@ -37,56 +29,58 @@ intents.reactions = True
 
 
 #Get config for bot
-config = getConfig()
+config = Config()
 
 
-command_sync_flags = commands.CommandSyncFlags.all()
 
 #Define the test guilds if the bot is in dev mode
-if config[1] == True:
+if config.data["dev"]:
     bot = commands.Bot(
-    command_prefix=config[3],
-    test_guilds=config[2],
-    command_sync_flags=command_sync_flags,
+    command_prefix=config.data["prefix"],
+    test_guilds=config.data["test_guilds"],
+    command_sync_flags=commands.CommandSyncFlags.all(),
     intents=intents,
-    activity = disnake.Activity(name=config[5])
+    activity = disnake.Activity(name=config.data["activity"])
 )
 #Define the bot if the bot is not in dev mode (no test guilds)
 else:
     bot = commands.Bot(
-        command_prefix=config[3],
-        command_sync_flags=command_sync_flags,
-        intents=intents,
-        activity = disnake.Activity(name=config[5])
-    )
+    command_prefix=config.data["prefix"],
+    command_sync_flags = commands.CommandSyncFlags.default(),
+    intents=intents,
+    activity = disnake.Activity(name=config.data["activity"])
+)
+
+# Add config to bot
+bot.config = config
 
 
 # Setup constants from config
 # convert string hex color codes from config to int with base 16, then add them to bot
-bot.colour_neutral = int(config[8]["neutral"], base=16)
-bot.colour_success = int(config[8]["success"], base=16)
-bot.colour_error = int(config[8]["error"], base=16)
+bot.colour_neutral = int(bot.config.data["colours"]["neutral"], base=16)
+bot.colour_success = int(bot.config.data["colours"]["success"], base=16)
+bot.colour_error = int(bot.config.data["colours"]["error"], base=16)
 # add emoji codes from config to bot 
-bot.emoji_check = config[9]["check"]
-bot.emoji_cross = config[9]["cross"]
-bot.emoji_loading = config[9]["loading"]
-bot.emoji_bullet_point = config[9]["bullet_point"]
+bot.emoji_check = bot.config.data["emojis"]["check"]
+bot.emoji_cross = bot.config.data["emojis"]["cross"]
+bot.emoji_loading = bot.config.data["emojis"]["loading"]
+bot.emoji_bullet_point = bot.config.data["emojis"]["bullet_point"]
 # add ownerd id and footer from config to bot
-bot.owner_id = config[0]
-bot.footer = config[7]
+bot.footer = bot.config.data["footer"]
+# Not sure if these are necessary, will hopefully rework the status command later
 bot.status_enum = commands.option_enum({"Online": disnake.Status.online.value, "Idle": disnake.Status.idle.value, "Do Not Disturb": disnake.Status.dnd.value, "Invisible": disnake.Status.invisible.value})
-bot.status_dict = {"online": disnake.Status.online, "idle": disnake.Status.idle, "dnd": disnake.Status.dnd, "invisible": disnake.Status.invisible}
 
-bot.permissions_int = 515433154624  # seems to be reasonable permissions, add this to config.json at some point
+bot.permissions_int = bot.config.data["permissions_int"]  # seems to be reasonable permissions, add this to config.json at some point
 
 
 #Adds cogs to the main bot (if they are enabled in config.json)
-cogs = config[10]
+cogs = bot.config.data["cogs"]
 
 # loads each cog
 for i in cogs:
-    if cogs[i]:
+    if cogs[i]["active"]:
         bot.load_extension(f'cogs.{i}')
+# Testing cog - not in config
 bot.load_extension("cogs.test_embed")
 
 
@@ -97,21 +91,19 @@ async def on_ready():
     print("------")
     print(f"Logged in as {bot.user}")
     print("------")
-    if config[1] == True:
+    if bot.config.data["dev"]:
         try:    
-            uptime = await bot.fetch_channel(config[6])
-            if config[1] == True:
-                dev = bot.emoji_check
-            else:
-                dev = bot.emoji_cross
+            uptime = await bot.fetch_channel(bot.config.data["uptime_channel"])
+            dev = bot.emoji_check
             cogs_string = ""
             for i in cogs:
                 cogs_string += "\n"
-                if cogs[i] == True:
+                if cogs[i]["active"]:
                     cogs_string += f">   • {bot.emoji_check} {i} enabled"
                 else:
                     cogs_string += f">   • {bot.emoji_cross} {i} disabled"
             await uptime.send(f"{bot.emoji_check} **{bot.user.mention} online!**\n> Disnake: {disnake.__version__}\n> Latency: {int(bot.latency * 1000)}ms\n> Dev mode: {dev}\n> Guilds: {len(bot.guilds)}\n> Cogs: {cogs_string}")
+            print("Uptime message sent")
         except:
             print("Uptime channel not found")
     else:
@@ -119,11 +111,13 @@ async def on_ready():
 
 
 @bot.slash_command()
+# Make this work for a list of owners in config
 @commands.is_owner()
 async def admin(inter):
     pass
 
-# very WIP command, likely will not work/has issues
+
+# WIP command, likely has issues
 @admin.sub_command()
 async def status(inter, status: bot.status_enum):
     """
