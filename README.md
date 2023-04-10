@@ -28,6 +28,8 @@ To run this project, you will need to add the following environment variables to
 
 ## Installation
 
+- THIS IS LIKELY OUTDATED, WILL BE UPDATED AT SOME POINT
+
 - First of all, make sure you have the latest version of Python installed. 
 - Next install the following modules which are required for all aspects of the bot to function.
 
