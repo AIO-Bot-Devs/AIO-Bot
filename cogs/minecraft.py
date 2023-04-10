@@ -22,15 +22,17 @@ class minecraftCog(commands.Cog):
     # this subcommand will retrieve data about a minecraft player
     @minecraft.sub_command()
     async def user(self, inter, username: str):
-
-        # TODO: put each step into a function to increase readability
-        # TODO: implement aiohttp requests
-
         """
+        Get info about a Minecraft player
+
         Parameters
         ----------
         username: The username of the account
         """
+
+        # TODO: put each step into a function to increase readability
+        # TODO: implement aiohttp requests
+
         bot = self.bot
         # bot is thinking
         await inter.response.defer(with_message=True)
@@ -117,6 +119,8 @@ class minecraftCog(commands.Cog):
     @minecraft.sub_command()
     async def server(self, inter, address: str, port: int = 25565):
         """
+        Get info about a Minecraft server
+        
         Parameters
         ----------
         address: The address of the server

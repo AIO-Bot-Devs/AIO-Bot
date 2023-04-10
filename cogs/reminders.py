@@ -51,7 +51,10 @@ class remindersCog(commands.Cog):
 
     # a task which runs every day at 12:00 UTC to check birthdays
     @tasks.loop(time=datetime.time(hour=12, tzinfo=datetime.timezone.utc))
-    async def birthdayCheck(self):        
+    async def birthdayCheck(self):     
+        """
+        Check if it's someone's birthday at 12:00 UTC everyday, in order to send a birthday message
+        """   
         print("Running birthday check...")
         print(f"Time: {datetime.datetime.now(datetime.timezone.utc)}")
         bot = self.bot

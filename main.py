@@ -61,7 +61,7 @@ else:
     )
 
 
-#Setup global variables
+# Setup constants from config
 # convert string hex color codes from config to int with base 16, then add them to bot
 bot.colour_neutral = int(config[8]["neutral"], base=16)
 bot.colour_success = int(config[8]["success"], base=16)
@@ -70,13 +70,14 @@ bot.colour_error = int(config[8]["error"], base=16)
 bot.emoji_check = config[9]["check"]
 bot.emoji_cross = config[9]["cross"]
 bot.emoji_loading = config[9]["loading"]
+bot.emoji_bullet_point = config[9]["bullet_point"]
 # add ownerd id and footer from config to bot
 bot.owner_id = config[0]
 bot.footer = config[7]
 bot.status_enum = commands.option_enum({"Online": disnake.Status.online.value, "Idle": disnake.Status.idle.value, "Do Not Disturb": disnake.Status.dnd.value, "Invisible": disnake.Status.invisible.value})
 bot.status_dict = {"online": disnake.Status.online, "idle": disnake.Status.idle, "dnd": disnake.Status.dnd, "invisible": disnake.Status.invisible}
 
-bot.permissions_int = 515433154624  # seems to be reasonable permissions
+bot.permissions_int = 515433154624  # seems to be reasonable permissions, add this to config.json at some point
 
 
 #Adds cogs to the main bot (if they are enabled in config.json)
@@ -122,8 +123,12 @@ async def on_ready():
 async def admin(inter):
     pass
 
+# very WIP command, likely will not work/has issues
 @admin.sub_command()
 async def status(inter, status: bot.status_enum):
+    """
+    Set the bot's status
+    """
     async with aiofiles.open("config.json", "r") as f:
         data = json.loads(await f.read())
     activity = disnake.Game(name=data["activity"])

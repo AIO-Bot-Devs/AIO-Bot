@@ -111,7 +111,7 @@ class suggestionsCog(commands.Cog):
     @suggestionschannel.sub_command()
     async def set(self, inter, channel: disnake.TextChannel):
         """
-        Set a suggestion channel
+        Set a suggestion channel (admin)
         
         Parameters
         ----------
@@ -135,6 +135,8 @@ class suggestionsCog(commands.Cog):
     @suggestionschannel.sub_command()
     async def remove(self, inter, channel: disnake.TextChannel):
         """
+        Remove a suggestion channel (admin)
+        
         Parameters
         ----------
         channel: The channel to remove

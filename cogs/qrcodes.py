@@ -64,6 +64,8 @@ class qrcodesCog(commands.Cog):
     @qrcode.sub_command()
     async def generate(self, inter, data):
         """
+        Generate a qrcode from the data provided
+        
         Parameters
         ----------
         data: The data to generate it with

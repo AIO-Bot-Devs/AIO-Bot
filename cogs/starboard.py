@@ -65,6 +65,8 @@ class starboardCog(commands.Cog):
     @starboardchannel.sub_command()
     async def set(self, inter, channel: disnake.TextChannel):
         """
+        Set the starboard channel for this server (admin)
+        
         Parameters
         ----------
         channel: The channel to set

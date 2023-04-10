@@ -32,6 +32,8 @@ class translateCog(commands.Cog):
     @commands.slash_command()
     async def translate(self, inter, text, destination, source=None):
         """
+        Translate text into a specified language
+        
         Parameters
         ----------
         text: The text to be translated
