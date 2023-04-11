@@ -3,10 +3,10 @@
 
 <p align="center">
   <a href="https://choosealicense.com/licenses/mit/" target="_blank">
-    <img alt="license" src="https://img.shields.io/github/license/veryevilpanda/Panda-Bot"/>
+    <img alt="license" src="https://img.shields.io/github/license/AIO-Bot-Devs/AIO-Bot"/>
   </a>
   <a href="https://www.python.org/" target="_blank">
-    <img alt="top language" src="https://img.shields.io/github/license/AIO-Bot-Devs/AIO-Bot"/>
+    <img alt="top language" src="https://img.shields.io/github/languages/top/AIO-Bot-Devs/AIO-Bot"/>
   </a>
   <a href="https://discord.gg/Zu6pDEBCjY" target="_blank">
     <img alt="discord" src="https://img.shields.io/discord/1002963156273999884?label=discord"/>
