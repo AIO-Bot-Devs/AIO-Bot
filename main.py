@@ -64,8 +64,10 @@ bot.emoji_check = bot.config.data["emojis"]["check"]
 bot.emoji_cross = bot.config.data["emojis"]["cross"]
 bot.emoji_loading = bot.config.data["emojis"]["loading"]
 bot.emoji_bullet_point = bot.config.data["emojis"]["bullet_point"]
-# add ownerd id and footer from config to bot
+bot.emoji_error = bot.config.data["emojis"]["error"]
+# add footer and list of owners from config to bot
 bot.footer = bot.config.data["footer"]
+bot.owners = bot.config.data["owners"]
 # Not sure if these are necessary, will hopefully rework the status command later
 bot.status_enum = commands.option_enum({"Online": disnake.Status.online.value, "Idle": disnake.Status.idle.value, "Do Not Disturb": disnake.Status.dnd.value, "Invisible": disnake.Status.invisible.value})
 
@@ -111,7 +113,7 @@ async def on_ready():
 
 @bot.slash_command()
 # Commands should only be available for a list of owners in config
-@commands.check(lambda ctx: ctx.author.id in ctx.bot.config.data["owners"])
+@commands.check(lambda ctx: ctx.author.id in ctx.bot.owners)
 async def admin(inter):
     pass
 
