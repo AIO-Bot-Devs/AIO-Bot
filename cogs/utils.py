@@ -59,6 +59,7 @@ class utilsCog(commands.Cog):
         await inter.response.send_message(f"Pong! Latency: {int(self.bot.latency * 1000)}ms")
 
     # command to render a webpage
+    # TODO: API trial ran out lol, change to use selenium webdriver and render the page locally instead, or just remove
     @commands.slash_command()
     async def webpage(self, inter, url: str):
         """

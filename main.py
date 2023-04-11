@@ -1,11 +1,10 @@
 #Imports all the required libraries
 import disnake
+from disnake.ext import commands
 import os
 from dotenv import load_dotenv
 import json
 import aiofiles
-
-
 
 
 class Config:
@@ -15,9 +14,9 @@ class Config:
         with open(self.filename, "r") as f:
             self.data = json.load(f)
 
-    async def reload():
+    async def reload(self):
         async with aiofiles.open(self.filename, "r") as f:
-            self.config = json.load(await f.read())
+            self.config = json.loads(await f.read())
 
 
 
@@ -111,11 +110,20 @@ async def on_ready():
 
 
 @bot.slash_command()
-# Make this work for a list of owners in config
-@commands.is_owner()
+# Commands should only be available for a list of owners in config
+@commands.check(lambda ctx: ctx.author.id in ctx.bot.config.data["owners"])
 async def admin(inter):
     pass
 
+
+@admin.sub_command()
+async def reload(inter):
+    """
+    Reloads the bot's config
+    """
+    await bot.config.reload()
+    await inter.response.send_message(f"{bot.emoji_check} Config reloaded")
+    print(f"Config reloaded by {inter.author.name}#{inter.author.discriminator} ({inter.author.id})")
 
 # WIP command, likely has issues
 @admin.sub_command()
@@ -131,7 +139,7 @@ async def status(inter, status: bot.status_enum):
         await f.write(json.dumps(data, indent=4))
     await bot.change_presence(status=status, activity=activity)
     await inter.response.send_message(f"{bot.emoji_check} Status set to {status}")
-    print(f"Status set to {status} by {inter.author.name} ({inter.author.id})")
+    print(f"Status set to {status} by {inter.author.name}#{inter.author.discriminator} ({inter.author.id})")
 
 
 
