@@ -10,13 +10,13 @@ import aiofiles
 class Config:
     def __init__(self, filename: str = "config.json"):
         self.filename = filename
-        self.config = None
+        self.data = None
         with open(self.filename, "r") as f:
             self.data = json.load(f)
 
     async def reload(self):
         async with aiofiles.open(self.filename, "r") as f:
-            self.config = json.loads(await f.read())
+            self.data = json.loads(await f.read())
 
 
 
@@ -68,11 +68,10 @@ bot.emoji_error = bot.config.data["emojis"]["error"]
 # add footer and list of owners from config to bot
 bot.footer = bot.config.data["footer"]
 bot.owners = bot.config.data["owners"]
-# Not sure if these are necessary, will hopefully rework the status command later
+# Add the status options to the bot so they can be used in the status command
 bot.status_enum = commands.option_enum({"Online": disnake.Status.online.value, "Idle": disnake.Status.idle.value, "Do Not Disturb": disnake.Status.dnd.value, "Invisible": disnake.Status.invisible.value})
 
-bot.permissions_int = bot.config.data["permissions_int"]  # seems to be reasonable permissions, add this to config.json at some point
-
+bot.permissions_int = bot.config.data["permissions_int"]  # seems to be reasonable permissions
 
 #Adds cogs to the main bot (if they are enabled in config.json)
 cogs = bot.config.data["cogs"]
