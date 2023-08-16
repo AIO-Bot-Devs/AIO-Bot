@@ -16,6 +16,7 @@
 - Repository for this WIP all-purpose Discord bot.
 - If you believe the code could be made more efficient, feel free to open a pull request.
 - Please note that some features are currently WIP and may not work correctly.
+- THE README IS CURRENTLY OUDATED SO SETUP WILL LIKELY NOT WORK.
 
 ## Environment Variables
 
